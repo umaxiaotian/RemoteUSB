@@ -1,4 +1,9 @@
-import type { BackendStatus, RemoteUsbDevice, UsbConnection, UsbServer } from '../core/models';
+import type {
+  BackendStatus,
+  RemoteUsbDevice,
+  UsbConnection,
+  UsbServer,
+} from "../core/models";
 /** 実装依存のUSB操作をmainプロセスから隔離する契約。 */
 export interface UsbBackend {
   checkAvailability(): Promise<BackendStatus>;

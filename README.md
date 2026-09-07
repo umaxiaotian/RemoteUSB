@@ -107,13 +107,13 @@ Releases include the installer, SHA-256 checksums, usbip-win2 source and license
 
 ## Troubleshooting
 
-| Problem | Check |
-| --- | --- |
-| USB support requires setup | Install USBip; check the CLI path, DLLs and UDE driver. |
-| Server is offline | Check the address, port, firewall and device sharing, then refresh. |
-| Connection fails | Check use by another PC, physical connections and driver permissions; open Details. |
-| Electron reports “bad option” | Remove `ELECTRON_RUN_AS_NODE` from the launch environment. |
-| Corrupt settings | The invalid file is preserved as `.invalid-*`; the app starts with defaults. |
+| Problem                       | Check                                                                               |
+| ----------------------------- | ----------------------------------------------------------------------------------- |
+| USB support requires setup    | Install USBip; check the CLI path, DLLs and UDE driver.                             |
+| Server is offline             | Check the address, port, firewall and device sharing, then refresh.                 |
+| Connection fails              | Check use by another PC, physical connections and driver permissions; open Details. |
+| Electron reports “bad option” | Remove `ELECTRON_RUN_AS_NODE` from the launch environment.                          |
+| Corrupt settings              | The invalid file is preserved as `.invalid-*`; the app starts with defaults.        |
 
 Settings and logs are under Electron's `app.getPath('userData')`. Use `REMOTEUSB_DATA_DIR` for an isolated test directory.
 

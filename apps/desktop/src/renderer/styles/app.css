@@ -1,14 +1,455 @@
-:root{font-family:'Segoe UI Variable','Segoe UI',sans-serif;color-scheme:light;--bg:#f4f4f4;--sidebar:#eeeeee90;--border:#00000012;--accent:#0067c0}
-:root[data-theme=dark]{color-scheme:dark;--bg:#242424;--sidebar:#20202090;--border:#ffffff12;--accent:#70baff}
-*{box-sizing:border-box}body{margin:0}h2.ant-typography{font-size:27px;margin:0 0 8px}h5.ant-typography{margin:0}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto;font-size:11px}.grow{flex:1;min-width:130px}.titlebar{height:42px;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:12px;app-region:drag;background:var(--sidebar)}.titlebar svg{color:var(--accent)}.app-shell{height:calc(100vh - 42px)}.sidebar{background:var(--sidebar)!important}.sidebar .ant-layout-sider-children{display:flex;flex-direction:column;padding:24px 10px 16px}.sidebar-brand{display:flex;align-items:center;gap:12px;padding:0 10px 28px}.sidebar-brand svg{color:var(--accent);flex-shrink:0}.sidebar-brand .ant-typography-secondary{font-size:11px}.sidebar .ant-menu{border-inline-end:0}.support{margin-top:auto;display:flex;gap:10px;padding:20px 10px 0;border-top:1px solid var(--border);font-size:12px}.support svg{color:var(--accent);flex-shrink:0}.support .ant-typography{font-size:11px}main{height:100%;overflow:auto;border:1px solid var(--border);border-radius:8px 0 0 0}.content{max-width:1240px;margin:auto;padding:32px 34px 48px}.page-header{margin-bottom:24px}.banners,.server-list{width:100%}.banners{margin-bottom:20px}.device-filter{margin:22px 0 28px}.device-filter .ant-input-affix-wrapper{max-width:290px}.device-group{margin-bottom:28px}.group-title{margin-bottom:12px}.group-title h5{font-size:12px;letter-spacing:.6px}.server-host{margin-left:auto;font-size:11px}.device-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.device-card{height:100%}.device-card .ant-card-body{padding:18px}.device-icon{color:var(--accent);flex-shrink:0}.device-card .ant-typography-secondary{font-size:11px}.device-status{margin:22px 0 12px}.device-card .ant-collapse{margin:0 -12px 12px}.device-card .ant-collapse-header{font-size:11px}.device-card .ant-alert{margin-bottom:8px}.settings{display:flex;flex-direction:column;gap:16px}.settings .ant-card-body{padding:20px}.settings .ant-select{max-width:300px}.settings .ant-form-item:last-child{margin-bottom:0}.section-actions{margin-bottom:16px}.about{padding:26px 0;width:100%}.welcome{text-align:center;padding:20px 8px}.welcome>svg{color:var(--accent);margin-bottom:22px}.welcome .ant-select{width:180px;margin:10px 0 24px}.loading{height:100vh;display:flex;align-items:center;justify-content:center;gap:15px;background:var(--bg)}.ant-empty{padding:32px 0}.ant-form-item .ant-alert{margin-bottom:12px}.ant-layout-sider-collapsed .sidebar-brand>div,.ant-layout-sider-collapsed .support{display:none}.ant-layout-sider-collapsed .sidebar-brand{padding-left:8px}
-@media(max-width:1000px){.content{padding:26px 22px}.device-grid{gap:10px}}
-@media(max-width:700px){.content{padding:20px 16px}.device-grid{grid-template-columns:1fr}.sidebar .ant-layout-sider-children{padding:20px 4px}.server-host{width:100%;margin-left:27px}.page-header .ant-space{flex-wrap:wrap}.settings .ant-alert{flex-wrap:wrap}.device-filter .ant-input-affix-wrapper{max-width:none}h2.ant-typography{font-size:24px}}
+:root {
+  font-family: "Segoe UI Variable", "Segoe UI", sans-serif;
+  color-scheme: light;
+  --bg: #f4f4f4;
+  --sidebar: #eeeeee90;
+  --border: #00000012;
+  --accent: #0067c0;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #242424;
+  --sidebar: #20202090;
+  --border: #ffffff12;
+  --accent: #70baff;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+h2.ant-typography {
+  font-size: 27px;
+  margin: 0 0 8px;
+}
+h5.ant-typography {
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 180px;
+  overflow: auto;
+  font-size: 11px;
+}
+.grow {
+  flex: 1;
+  min-width: 130px;
+}
+.titlebar {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  font-size: 12px;
+  app-region: drag;
+  background: var(--sidebar);
+}
+.titlebar svg {
+  color: var(--accent);
+}
+.app-shell {
+  height: calc(100vh - 42px);
+}
+.sidebar {
+  background: var(--sidebar) !important;
+}
+.sidebar .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 10px 16px;
+}
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px 28px;
+}
+.sidebar-brand svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.sidebar-brand .ant-typography-secondary {
+  font-size: 11px;
+}
+.sidebar .ant-menu {
+  border-inline-end: 0;
+}
+.support {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  padding: 20px 10px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+.support svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.support .ant-typography {
+  font-size: 11px;
+}
+main {
+  height: 100%;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px 0 0 0;
+}
+.content {
+  max-width: 1240px;
+  margin: auto;
+  padding: 32px 34px 48px;
+}
+.page-header {
+  margin-bottom: 24px;
+}
+.banners,
+.server-list {
+  width: 100%;
+}
+.banners {
+  margin-bottom: 20px;
+}
+.device-filter {
+  margin: 22px 0 28px;
+}
+.device-filter .ant-input-affix-wrapper {
+  max-width: 290px;
+}
+.device-group {
+  margin-bottom: 28px;
+}
+.group-title {
+  margin-bottom: 12px;
+}
+.group-title h5 {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+}
+.server-host {
+  margin-left: auto;
+  font-size: 11px;
+}
+.device-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.device-card {
+  height: 100%;
+}
+.device-card .ant-card-body {
+  padding: 18px;
+}
+.device-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.device-card .ant-typography-secondary {
+  font-size: 11px;
+}
+.device-status {
+  margin: 22px 0 12px;
+}
+.device-card .ant-collapse {
+  margin: 0 -12px 12px;
+}
+.device-card .ant-collapse-header {
+  font-size: 11px;
+}
+.device-card .ant-alert {
+  margin-bottom: 8px;
+}
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.settings .ant-card-body {
+  padding: 20px;
+}
+.settings .ant-select {
+  max-width: 300px;
+}
+.settings .ant-form-item:last-child {
+  margin-bottom: 0;
+}
+.section-actions {
+  margin-bottom: 16px;
+}
+.about {
+  padding: 26px 0;
+  width: 100%;
+}
+.welcome {
+  text-align: center;
+  padding: 20px 8px;
+}
+.welcome > svg {
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+.welcome .ant-select {
+  width: 180px;
+  margin: 10px 0 24px;
+}
+.loading {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: var(--bg);
+}
+.ant-empty {
+  padding: 32px 0;
+}
+.ant-form-item .ant-alert {
+  margin-bottom: 12px;
+}
+.ant-layout-sider-collapsed .sidebar-brand > div,
+.ant-layout-sider-collapsed .support {
+  display: none;
+}
+.ant-layout-sider-collapsed .sidebar-brand {
+  padding-left: 8px;
+}
+@media (max-width: 1000px) {
+  .content {
+    padding: 26px 22px;
+  }
+  .device-grid {
+    gap: 10px;
+  }
+}
+@media (max-width: 700px) {
+  .content {
+    padding: 20px 16px;
+  }
+  .device-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar .ant-layout-sider-children {
+    padding: 20px 4px;
+  }
+  .server-host {
+    width: 100%;
+    margin-left: 27px;
+  }
+  .page-header .ant-space {
+    flex-wrap: wrap;
+  }
+  .settings .ant-alert {
+    flex-wrap: wrap;
+  }
+  .device-filter .ant-input-affix-wrapper {
+    max-width: none;
+  }
+  h2.ant-typography {
+    font-size: 24px;
+  }
+}
 
-@media(forced-colors:active){.ant-btn,.ant-card,.ant-select-selector,.ant-input{border:1px solid ButtonText}.ant-menu-item-selected{outline:1px solid Highlight}}
+@media (forced-colors: active) {
+  .ant-btn,
+  .ant-card,
+  .ant-select-selector,
+  .ant-input {
+    border: 1px solid ButtonText;
+  }
+  .ant-menu-item-selected {
+    outline: 1px solid Highlight;
+  }
+}
 
 /* Ant Designの操作部品に、Windowsユーティリティの余白と階層を適用する。 */
-:root{--text:#202020}:root[data-theme=dark]{--text:#f2f2f2}.sidebar .ant-menu{border-inline-end:0!important}.sidebar .ant-menu-item{color:var(--text)!important}.banners .ant-alert{border-radius:5px}
-.sidebar .ant-layout-sider-children{padding:24px 12px 14px}.brand-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:9px;background:var(--accent);color:var(--bg);flex-shrink:0}.sidebar-brand{padding:0 8px 30px;gap:11px}.sidebar-brand .brand-icon svg{color:inherit}.sidebar-brand>.brand-icon{display:grid}.sidebar-brand .ant-typography strong{font-size:14px}.secondary-menu{margin-top:auto}.support{margin-top:16px;padding:18px 12px 0}.sidebar .ant-menu-item{margin:2px 0;width:100%;padding-left:12px!important}.sidebar .ant-menu-item-selected:before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--accent)}.sidebar .ant-menu-item-icon{margin-right:3px}.content{padding:34px 36px 48px}.page-header .ant-typography-secondary{font-size:13px}.banners .ant-alert{font-size:12px;padding:10px 14px}.banners .ant-alert-info .ant-alert-title{color:var(--muted,#656565)}.device-card{box-shadow:0 1px 2px #00000003;border-bottom-color:#00000020}.device-card .ant-card-body{padding:19px 18px 0}.device-icon{width:36px;height:42px;color:#757575;display:grid;place-items:center}.device-card.connected .device-icon{color:var(--accent)}.device-card .ant-typography strong{font-size:14px;font-weight:600}.device-card .ant-typography-secondary{font-size:11px}.device-card .device-icon+div>div{margin-top:5px}.device-status{margin:21px 0 14px}.device-status .ant-badge-status-text{font-size:11px;color:inherit}.device-status .ant-badge-status-success+.ant-badge-status-text{color:#137333}.device-actions{padding:3px 0 17px}.device-actions>.ant-collapse{flex:1;min-width:0;margin:0 0 0 -12px}.device-actions>.ant-btn{min-width:100px;font-size:12px}.device-actions .ant-collapse-header{padding:8px 12px!important;color:#656565}.reconnect-row{border-top:1px solid var(--border);padding:10px 0}.ant-btn:not(.ant-btn-primary):not(.ant-btn-dangerous){border-bottom-color:#00000030}.ant-input,.ant-input-affix-wrapper,.ant-input-number,.ant-select-outlined{border-bottom-color:#888}.ant-layout-sider-collapsed .sidebar-brand>.brand-icon{display:grid;width:38px;height:38px}.ant-layout-sider-collapsed .sidebar-brand{padding-left:0}.ant-layout-sider-collapsed .ant-menu-item{padding-left:14px!important}
-:root[data-theme=dark]{--muted:#b5b5b5}:root[data-theme=dark] .device-status .ant-badge-status-success+.ant-badge-status-text{color:#7bd99d}:root[data-theme=dark] .device-actions .ant-collapse-header{color:#b5b5b5}
-@media(max-width:1000px){.content{padding:26px 24px}.device-card .ant-typography strong{font-size:13px}}
-@media(max-width:700px){.content{padding:22px 16px}.sidebar .ant-layout-sider-children{padding:20px 4px}.device-actions>.ant-btn{min-width:90px}}
+:root {
+  --text: #202020;
+}
+:root[data-theme="dark"] {
+  --text: #f2f2f2;
+}
+.sidebar .ant-menu {
+  border-inline-end: 0 !important;
+}
+.sidebar .ant-menu-item {
+  color: var(--text) !important;
+}
+.banners .ant-alert {
+  border-radius: 5px;
+}
+.sidebar .ant-layout-sider-children {
+  padding: 24px 12px 14px;
+}
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--bg);
+  flex-shrink: 0;
+}
+.sidebar-brand {
+  padding: 0 8px 30px;
+  gap: 11px;
+}
+.sidebar-brand .brand-icon svg {
+  color: inherit;
+}
+.sidebar-brand > .brand-icon {
+  display: grid;
+}
+.sidebar-brand .ant-typography strong {
+  font-size: 14px;
+}
+.secondary-menu {
+  margin-top: auto;
+}
+.support {
+  margin-top: 16px;
+  padding: 18px 12px 0;
+}
+.sidebar .ant-menu-item {
+  margin: 2px 0;
+  width: 100%;
+  padding-left: 12px !important;
+}
+.sidebar .ant-menu-item-selected:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.sidebar .ant-menu-item-icon {
+  margin-right: 3px;
+}
+.content {
+  padding: 34px 36px 48px;
+}
+.page-header .ant-typography-secondary {
+  font-size: 13px;
+}
+.banners .ant-alert {
+  font-size: 12px;
+  padding: 10px 14px;
+}
+.banners .ant-alert-info .ant-alert-title {
+  color: var(--muted, #656565);
+}
+.device-card {
+  box-shadow: 0 1px 2px #00000003;
+  border-bottom-color: #00000020;
+}
+.device-card .ant-card-body {
+  padding: 19px 18px 0;
+}
+.device-icon {
+  width: 36px;
+  height: 42px;
+  color: #757575;
+  display: grid;
+  place-items: center;
+}
+.device-card.connected .device-icon {
+  color: var(--accent);
+}
+.device-card .ant-typography strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.device-card .ant-typography-secondary {
+  font-size: 11px;
+}
+.device-card .device-icon + div > div {
+  margin-top: 5px;
+}
+.device-status {
+  margin: 21px 0 14px;
+}
+.device-status .ant-badge-status-text {
+  font-size: 11px;
+  color: inherit;
+}
+.device-status .ant-badge-status-success + .ant-badge-status-text {
+  color: #137333;
+}
+.device-actions {
+  padding: 3px 0 17px;
+}
+.device-actions > .ant-collapse {
+  flex: 1;
+  min-width: 0;
+  margin: 0 0 0 -12px;
+}
+.device-actions > .ant-btn {
+  min-width: 100px;
+  font-size: 12px;
+}
+.device-actions .ant-collapse-header {
+  padding: 8px 12px !important;
+  color: #656565;
+}
+.reconnect-row {
+  border-top: 1px solid var(--border);
+  padding: 10px 0;
+}
+.ant-btn:not(.ant-btn-primary):not(.ant-btn-dangerous) {
+  border-bottom-color: #00000030;
+}
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-input-number,
+.ant-select-outlined {
+  border-bottom-color: #888;
+}
+.ant-layout-sider-collapsed .sidebar-brand > .brand-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+}
+.ant-layout-sider-collapsed .sidebar-brand {
+  padding-left: 0;
+}
+.ant-layout-sider-collapsed .ant-menu-item {
+  padding-left: 14px !important;
+}
+:root[data-theme="dark"] {
+  --muted: #b5b5b5;
+}
+:root[data-theme="dark"]
+  .device-status
+  .ant-badge-status-success
+  + .ant-badge-status-text {
+  color: #7bd99d;
+}
+:root[data-theme="dark"] .device-actions .ant-collapse-header {
+  color: #b5b5b5;
+}
+@media (max-width: 1000px) {
+  .content {
+    padding: 26px 24px;
+  }
+  .device-card .ant-typography strong {
+    font-size: 13px;
+  }
+}
+@media (max-width: 700px) {
+  .content {
+    padding: 22px 16px;
+  }
+  .sidebar .ant-layout-sider-children {
+    padding: 20px 4px;
+  }
+  .device-actions > .ant-btn {
+    min-width: 90px;
+  }
+}

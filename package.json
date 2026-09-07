@@ -19,7 +19,9 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "electron-vite build && playwright test",
-    "package": "node scripts/verify-vendor.mjs && electron-vite build && electron-builder --win nsis --x64"
+    "package": "node scripts/verify-vendor.mjs && electron-vite build && electron-builder --win nsis --x64",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "antd": "^6.6.3",
@@ -31,6 +33,7 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "prettier": "^3.9.6",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "latest",
     "@testing-library/jest-dom": "latest",
@@ -58,10 +61,27 @@
       "output": "release"
     },
     "extraResources": [
-      { "from": "vendor/usbip-win2", "to": "vendor/usbip-win2", "filter": ["**/*", "!*.pfx", "!*.p12"] },
-      { "from": "build/icon.png", "to": "branding/icon.png" },
-      { "from": "build/icon.ico", "to": "branding/icon.ico" },
-      { "from": "scripts/install-driver.ps1", "to": "driver-setup/install-driver.ps1" }
+      {
+        "from": "vendor/usbip-win2",
+        "to": "vendor/usbip-win2",
+        "filter": [
+          "**/*",
+          "!*.pfx",
+          "!*.p12"
+        ]
+      },
+      {
+        "from": "build/icon.png",
+        "to": "branding/icon.png"
+      },
+      {
+        "from": "build/icon.ico",
+        "to": "branding/icon.ico"
+      },
+      {
+        "from": "scripts/install-driver.ps1",
+        "to": "driver-setup/install-driver.ps1"
+      }
     ],
     "files": [
       "out/**/*",
