@@ -1,13 +1,17 @@
 name: Release
+
 on:
   push:
-    tags: ["v[0-9]*"]
+    tags:
+      - "v[0-9]*"
+
   workflow_dispatch:
     inputs:
       tag:
         description: "Release tag (must match package.json, e.g. v0.1.0)"
         required: true
         type: string
+
       prerelease:
         description: "Mark as prerelease"
         type: boolean
@@ -15,6 +19,7 @@ on:
 
 permissions:
   contents: read
+
 concurrency:
   group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
@@ -22,47 +27,109 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+
     outputs:
-      tag: ${{ steps.version.outputs.tag }}
+      release_tag: ${{ steps.version.outputs.release_tag }}
+      release_sha: ${{ steps.version.outputs.release_sha }}
+      prerelease: ${{ steps.version.outputs.prerelease }}
+
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Validate version
+
+      - name: Validate version and prepare release metadata
         id: version
         shell: pwsh
         env:
           REQUESTED_TAG: ${{ inputs.tag || github.ref_name }}
+          REQUESTED_PRERELEASE: ${{ inputs.prerelease || false }}
         run: |
           $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
-          if ($env:REQUESTED_TAG -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$' -or $env:REQUESTED_TAG -cne "v$version") {
-            throw 'Tag must match package.json version exactly.'
+
+          if (
+            $env:REQUESTED_TAG -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$' -or
+            $env:REQUESTED_TAG -cne "v$version"
+          ) {
+            throw "Tag '$env:REQUESTED_TAG' must match package.json version 'v$version' exactly."
           }
-          "tag=$env:REQUESTED_TAG" >> $env:GITHUB_OUTPUT
+
+          # Use the exact commit checked out and tested by this job.
+          $releaseSha = (git rev-parse HEAD).Trim()
+
+          if (-not $releaseSha) {
+            throw "Failed to resolve release commit SHA."
+          }
+
+          # Explicit prerelease input or SemVer prerelease suffix.
+          $isPrerelease = "false"
+
+          if (
+            $env:REQUESTED_PRERELEASE -eq "true" -or
+            $env:REQUESTED_TAG -match '-'
+          ) {
+            $isPrerelease = "true"
+          }
+
+          "release_tag=$env:REQUESTED_TAG" >> $env:GITHUB_OUTPUT
+          "release_sha=$releaseSha" >> $env:GITHUB_OUTPUT
+          "prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Release tag: $env:REQUESTED_TAG"
+          Write-Host "Release SHA: $releaseSha"
+          Write-Host "Prerelease: $isPrerelease"
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10.32.1
+
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm vendor:verify
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm test:e2e
-      - name: Build installer (publishing is handled separately)
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify bundled vendor files
+        run: pnpm vendor:verify
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+
+      - name: Build installer
         run: pnpm package --publish never
+
       - name: Prepare release files and checksums
         shell: pwsh
         run: |
           Copy-Item THIRD_PARTY_NOTICES.md release/
           Copy-Item vendor/usbip-win2/source-0.9.8.0.zip release/
           Copy-Item vendor/usbip-win2/LICENSE.txt release/usbip-win2-LICENSE.txt
-          $files = Get-ChildItem release -File | Where-Object { $_.Extension -in '.exe', '.zip', '.md', '.txt', '.blockmap' }
-          $lines = $files | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name }
-          $lines | Set-Content release/SHA256SUMS.txt -Encoding utf8NoBOM
+
+          $files = Get-ChildItem release -File |
+            Where-Object {
+              $_.Extension -in '.exe', '.zip', '.md', '.txt', '.blockmap'
+            }
+
+          $lines = $files | ForEach-Object {
+            "{0}  {1}" -f (
+              Get-FileHash $_.FullName -Algorithm SHA256
+            ).Hash.ToLowerInvariant(), $_.Name
+          }
+
+          $lines |
+            Set-Content release/SHA256SUMS.txt -Encoding utf8NoBOM
+
       - uses: actions/upload-artifact@v4
         with:
           name: windows-release
@@ -73,6 +140,7 @@ jobs:
             release/*.zip
             release/*.md
             release/*.txt
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -82,13 +150,16 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
+
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: windows-release
           path: artifacts
+
       - name: Create tag and release
         shell: bash
         env:
@@ -100,6 +171,15 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Fail immediately if build outputs were not propagated.
+          : "${RELEASE_TAG:?RELEASE_TAG is empty}"
+          : "${RELEASE_SHA:?RELEASE_SHA is empty}"
+          : "${PRERELEASE:?PRERELEASE is empty}"
+
+          echo "Release tag: $RELEASE_TAG"
+          echo "Release SHA: $RELEASE_SHA"
+          echo "Prerelease: $PRERELEASE"
+
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Release $RELEASE_TAG already exists; refusing to overwrite published artifacts." >&2
             exit 1
@@ -108,11 +188,12 @@ jobs:
           # Check whether the tag already exists.
           existing=$(
             gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" \
-              --jq '.object.sha' 2>/dev/null || true
+              --jq '.object.sha' \
+              2>/dev/null || true
           )
 
           if [[ -n "$existing" ]]; then
-            # Resolve lightweight or annotated tag to the actual commit.
+            # Resolve lightweight or annotated tag to its commit.
             resolved=$(
               gh api "repos/$GH_REPO/commits/$RELEASE_TAG" \
                 --jq '.sha'
@@ -124,6 +205,8 @@ jobs:
               echo "Actual:   $resolved" >&2
               exit 1
             fi
+
+            echo "Tag $RELEASE_TAG already exists at the expected commit."
           else
             echo "Creating tag $RELEASE_TAG at $RELEASE_SHA"
 
@@ -133,6 +216,8 @@ jobs:
               -f ref="refs/tags/$RELEASE_TAG" \
               -f sha="$RELEASE_SHA" \
               >/dev/null
+
+            echo "Created tag $RELEASE_TAG."
           fi
 
           flags=()
@@ -147,4 +232,3 @@ jobs:
             --title "RemoteUSB $RELEASE_TAG" \
             --generate-notes \
             "${flags[@]}"
-            
