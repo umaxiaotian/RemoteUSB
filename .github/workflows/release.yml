@@ -90,26 +90,61 @@ jobs:
           name: windows-release
           path: artifacts
       - name: Create tag and release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ needs.build.outputs.tag }}
-          RELEASE_SHA: ${{ github.sha }}
-          PRERELEASE: ${{ inputs.prerelease || false }}
-        shell: bash
+          RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+          RELEASE_SHA: ${{ needs.build.outputs.release_sha }}
+          PRERELEASE: ${{ needs.build.outputs.prerelease }}
         run: |
           set -euo pipefail
+
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo 'Release already exists; refusing to overwrite published artifacts.' >&2
+            echo "Release $RELEASE_TAG already exists; refusing to overwrite published artifacts." >&2
             exit 1
           fi
-          # --target creates the tag at the exact tested commit for manual runs.
-          # Existing tags from push events are already bound to that commit.
-          existing=$(gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" --jq '.object.sha' 2>/dev/null || true)
+
+          # Check whether the tag already exists.
+          existing=$(
+            gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" \
+              --jq '.object.sha' 2>/dev/null || true
+          )
+
           if [[ -n "$existing" ]]; then
-            resolved=$(gh api "repos/$GH_REPO/commits/$RELEASE_TAG" --jq '.sha')
-            [[ "$resolved" == "$RELEASE_SHA" ]] || { echo 'Tag points to another commit.' >&2; exit 1; }
+            # Resolve lightweight or annotated tag to the actual commit.
+            resolved=$(
+              gh api "repos/$GH_REPO/commits/$RELEASE_TAG" \
+                --jq '.sha'
+            )
+
+            if [[ "$resolved" != "$RELEASE_SHA" ]]; then
+              echo "Tag $RELEASE_TAG points to another commit." >&2
+              echo "Expected: $RELEASE_SHA" >&2
+              echo "Actual:   $resolved" >&2
+              exit 1
+            fi
+          else
+            echo "Creating tag $RELEASE_TAG at $RELEASE_SHA"
+
+            gh api \
+              --method POST \
+              "repos/$GH_REPO/git/refs" \
+              -f ref="refs/tags/$RELEASE_TAG" \
+              -f sha="$RELEASE_SHA" \
+              >/dev/null
           fi
+
           flags=()
-          if [[ "$PRERELEASE" == true || "$RELEASE_TAG" == *-* ]]; then flags+=(--prerelease); fi
-          gh release create "$RELEASE_TAG" artifacts/* --target "$RELEASE_SHA" --title "RemoteUSB $RELEASE_TAG" --generate-notes "${flags[@]}"
+
+          if [[ "$PRERELEASE" == "true" || "$RELEASE_TAG" == *-* ]]; then
+            flags+=(--prerelease)
+          fi
+
+          gh release create "$RELEASE_TAG" \
+            artifacts/* \
+            --verify-tag \
+            --title "RemoteUSB $RELEASE_TAG" \
+            --generate-notes \
+            "${flags[@]}"
+            
