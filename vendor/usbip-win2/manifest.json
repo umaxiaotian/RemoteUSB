@@ -1,0 +1,22 @@
+{
+  "project": "vadimgrn/usbip-win2",
+  "version": "0.9.8.0",
+  "license": "BSD-2-Clause",
+  "artifacts": [
+    {
+      "name": "USBip-0.9.8.0-x64.exe",
+      "url": "https://github.com/vadimgrn/usbip-win2/releases/download/v.0.9.8.0/USBip-0.9.8.0-x64.exe",
+      "sha256": "81f426741f7ee2ed991febe24a22daca8400b6ae2f171054e3fb404897e15d39"
+    },
+    {
+      "name": "source-original.zip",
+      "url": "https://api.github.com/repos/vadimgrn/usbip-win2/zipball/v.0.9.8.0",
+      "sha256": "b3fc7f567e1e1fac2d8776d4f93f4aaccbce04889fd3da9cc2d3131e72942d8c"
+    }
+  ],
+  "files": {
+    "USBip-0.9.8.0-x64.exe": "81f426741f7ee2ed991febe24a22daca8400b6ae2f171054e3fb404897e15d39",
+    "source-0.9.8.0.zip": "6696f631beee9f6c2134a01ad23a15078c56476a01adb863d40bc4337b2b073e",
+    "LICENSE.txt": "4a4d332cbf1c623639df7ffc756243d86462beb4c79c8b11081cb44a4792eda2"
+  }
+}

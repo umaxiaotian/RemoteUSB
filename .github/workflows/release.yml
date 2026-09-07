@@ -1,0 +1,115 @@
+name: Release
+on:
+  push:
+    tags: ['v[0-9]*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (must match package.json, e.g. v0.1.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as prerelease'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate version
+        id: version
+        shell: pwsh
+        env:
+          REQUESTED_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ($env:REQUESTED_TAG -notmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$' -or $env:REQUESTED_TAG -cne "v$version") {
+            throw 'Tag must match package.json version exactly.'
+          }
+          "tag=$env:REQUESTED_TAG" >> $env:GITHUB_OUTPUT
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.32.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm vendor:verify
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm test:e2e
+      - name: Build installer (publishing is handled separately)
+        run: pnpm package --publish never
+      - name: Prepare release files and checksums
+        shell: pwsh
+        run: |
+          Copy-Item THIRD_PARTY_NOTICES.md release/
+          Copy-Item vendor/usbip-win2/source-0.9.8.0.zip release/
+          Copy-Item vendor/usbip-win2/LICENSE.txt release/usbip-win2-LICENSE.txt
+          $files = Get-ChildItem release -File | Where-Object { $_.Extension -in '.exe', '.zip', '.md', '.txt', '.blockmap' }
+          $lines = $files | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name }
+          $lines | Set-Content release/SHA256SUMS.txt -Encoding utf8NoBOM
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          if-no-files-found: error
+          path: |
+            release/*.exe
+            release/*.blockmap
+            release/*.zip
+            release/*.md
+            release/*.txt
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: release-test-results
+          path: test-results
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: artifacts
+      - name: Create tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.build.outputs.tag }}
+          RELEASE_SHA: ${{ github.sha }}
+          PRERELEASE: ${{ inputs.prerelease || false }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo 'Release already exists; refusing to overwrite published artifacts.' >&2
+            exit 1
+          fi
+          # --target creates the tag at the exact tested commit for manual runs.
+          # Existing tags from push events are already bound to that commit.
+          existing=$(gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" --jq '.object.sha' 2>/dev/null || true)
+          if [[ -n "$existing" ]]; then
+            resolved=$(gh api "repos/$GH_REPO/commits/$RELEASE_TAG" --jq '.sha')
+            [[ "$resolved" == "$RELEASE_SHA" ]] || { echo 'Tag points to another commit.' >&2; exit 1; }
+          fi
+          flags=()
+          if [[ "$PRERELEASE" == true || "$RELEASE_TAG" == *-* ]]; then flags+=(--prerelease); fi
+          gh release create "$RELEASE_TAG" artifacts/* --target "$RELEASE_SHA" --title "RemoteUSB $RELEASE_TAG" --generate-notes "${flags[@]}"

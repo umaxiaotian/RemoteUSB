@@ -1,0 +1,11 @@
+Exportable USB devices
+======================
+ - home-server.local
+        1-2: QinHeng Electronics : USB Serial CH340 (1a86:7523)
+           : /sys/devices/usb1/1-2
+           : (Defined at Interface level) (00/00/00)
+           :  0 - Vendor Specific Class (ff/00/00)
+
+      1-4.2: STMicroelectronics : ST-Link V2 (0483:3748)
+           : /sys/devices/usb1/1-4/1-4.2
+           : Vendor Specific Class (ff/00/00)

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+out/
+release/
+.cache/
+.tools/
+test-results/
+playwright-report/
+*.log
+*.pfx
+*.p12
+.env*

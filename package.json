@@ -1,0 +1,94 @@
+{
+  "name": "remoteusb",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A modern USB/IP client for Windows",
+  "productName": "RemoteUSB",
+  "author": "RemoteUSB contributors",
+  "license": "MIT",
+  "main": "out/main/index.js",
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "postinstall": "node node_modules/electron/install.js",
+    "vendor:fetch": "node scripts/fetch-usbip.mjs",
+    "vendor:verify": "node scripts/verify-vendor.mjs",
+    "dev": "electron-vite dev",
+    "dev:mock": "cross-env REMOTEUSB_BACKEND=mock electron-vite dev",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "electron-vite build && playwright test",
+    "package": "node scripts/verify-vendor.mjs && electron-vite build && electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "antd": "^6.6.3",
+    "i18next": "^26.4.2",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-i18next": "^17.0.13",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "latest",
+    "@testing-library/jest-dom": "latest",
+    "@testing-library/react": "latest",
+    "@types/node": "^24.0.0",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "^5.2.0",
+    "cross-env": "latest",
+    "electron": "44.2.0",
+    "electron-builder": "latest",
+    "electron-vite": "latest",
+    "eslint": "^10.10.0",
+    "fflate": "^0.8.3",
+    "jsdom": "latest",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "latest",
+    "vite": "7.3.6",
+    "vitest": "^4.1.11"
+  },
+  "build": {
+    "appId": "io.remoteusb.desktop",
+    "productName": "RemoteUSB",
+    "directories": {
+      "output": "release"
+    },
+    "extraResources": [
+      { "from": "vendor/usbip-win2", "to": "vendor/usbip-win2", "filter": ["**/*", "!*.pfx", "!*.p12"] },
+      { "from": "build/icon.png", "to": "branding/icon.png" },
+      { "from": "build/icon.ico", "to": "branding/icon.ico" },
+      { "from": "scripts/install-driver.ps1", "to": "driver-setup/install-driver.ps1" }
+    ],
+    "files": [
+      "out/**/*",
+      "package.json",
+      "THIRD_PARTY_NOTICES.md",
+      "LICENSE"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "include": "build/installer.nsh",
+      "shortcutName": "RemoteUSB",
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "RemoteUSB-Setup-${version}.${ext}"
+    }
+  }
+}

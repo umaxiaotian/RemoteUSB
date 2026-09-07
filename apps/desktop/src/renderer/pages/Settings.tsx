@@ -1,0 +1,15 @@
+import { Alert, Button, Card, Flex, Form, Input, InputNumber, Select, Switch, Typography } from 'antd';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { settingsSchema, type ApplicationSettings } from '../../../../../packages/core/models';
+import type { Response } from '../../../../../packages/shared/ipc';
+/** フィールド定義を共有し、設定入力の重複を削減する。 */
+export function Settings({ settings, mode, onSave, onTools }: { settings: ApplicationSettings; mode: string; onSave: (s: ApplicationSettings) => Promise<Response>; onTools: () => void }) {
+  const { t } = useTranslation(); const [status, setStatus] = useState(''), [saving, setSaving] = useState(false);
+  return <Form layout="vertical" initialValues={settings} className="settings" onFinish={async values => { const parsed = settingsSchema.safeParse({ ...settings, ...values }); if (!parsed.success) { setStatus(t('validation')); return; } setSaving(true); const result = await onSave(parsed.data); setSaving(false); setStatus(t(result.ok ? 'settingsSaved' : result.error.code)); }}>
+    <Card title={t('Appearance')}><Form.Item name="language" label={t('Language')}><Select options={[{ value: 'system', label: t('System') }, { value: 'en', label: 'English' }, { value: 'ja', label: '日本語' }, { value: 'ko', label: '한국어' }, { value: 'zh-CN', label: '简体中文' }]} /></Form.Item><Form.Item name="theme" label={t('App theme')}><Select options={['system', 'light', 'dark'].map(value => ({ value, label: t(value[0].toUpperCase() + value.slice(1)) }))} /></Form.Item></Card>
+    <Card title={t('General')}>{(['startAtLogin', 'minimizeToTray', 'autoRefresh', 'autoReconnect'] as const).map((key, i) => <Flex key={key} justify="space-between" align="center" gap={16}><div><Typography.Text>{t(key === 'autoReconnect' ? 'Auto reconnect' : key)}</Typography.Text><Typography.Paragraph type="secondary">{t(['installedOnly', 'trayHint', 'refreshHint', 'reconnectHint'][i])}</Typography.Paragraph></div><Form.Item name={key} valuePropName="checked"><Switch aria-label={t(key === 'autoReconnect' ? 'Auto reconnect' : key)} /></Form.Item></Flex>)}</Card>
+    <Card title={t('Advanced')}><Form.Item name="executablePath" label={t('executablePath')} extra={t('bundledHint')}><Input placeholder="C:\\Tools\\usbip\\usbip.exe" /></Form.Item><Form.Item name="timeout" label={t('timeout')}><InputNumber min={1000} max={60000} step={1000} /></Form.Item>{(['technicalInfo', 'debugLogging'] as const).map(key => <Form.Item key={key} name={key} label={t(key)} valuePropName="checked"><Switch aria-label={t(key)} /></Form.Item>)}{mode === 'mock' && <Form.Item name="mockErrorRate" label={t('mockErrorRate')}><InputNumber min={0} max={1} step={0.1} /></Form.Item>}<Alert type="info" title={t('Bundled USB tools')} description={t('driverNotice')} action={<Button onClick={onTools}>{t('Open tool folder')}</Button>} /></Card>
+    <Flex justify="end" align="center" gap={16}><Typography.Text role="status">{status}</Typography.Text><Button type="primary" htmlType="submit" loading={saving}>{t('Save settings')}</Button></Flex>
+  </Form>;
+}

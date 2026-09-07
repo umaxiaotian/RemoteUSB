@@ -1,0 +1,8 @@
+Imported USB devices
+====================
+Port 01: device in use at full-speed
+         QinHeng Electronics : USB Serial CH340 (1a86:7523)
+           -> usbip://home-server.local:4321/1-2
+           -> remote bus/dev: 001/002
+           -> serial:
+           -> mode: zero-copy
