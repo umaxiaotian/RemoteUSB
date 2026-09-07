@@ -150,113 +150,113 @@ jobs:
         with:
           name: release-test-results
           path: test-results
+publish:
+  needs: build
+  runs-on: ubuntu-latest
 
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
+  permissions:
+    contents: write
 
-    permissions:
-      contents: write
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: windows-release
+        path: artifacts
 
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: windows-release
-          path: artifacts
+    - name: Create tag and release
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GH_REPO: ${{ github.repository }}
+        RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
+        RELEASE_SHA: ${{ needs.build.outputs.release_sha }}
+        PRERELEASE: ${{ needs.build.outputs.prerelease }}
+      run: |
+        set -euo pipefail
 
-      - name: Create tag and release
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          RELEASE_TAG: ${{ needs.build.outputs.release_tag }}
-          RELEASE_SHA: ${{ needs.build.outputs.release_sha }}
-          PRERELEASE: ${{ needs.build.outputs.prerelease }}
-        run: |
-          set -euo pipefail
+        : "${RELEASE_TAG:?RELEASE_TAG is empty}"
+        : "${RELEASE_SHA:?RELEASE_SHA is empty}"
+        : "${PRERELEASE:?PRERELEASE is empty}"
 
-          # Fail immediately if build outputs were not propagated.
-          : "${RELEASE_TAG:?RELEASE_TAG is empty}"
-          : "${RELEASE_SHA:?RELEASE_SHA is empty}"
-          : "${PRERELEASE:?PRERELEASE is empty}"
+        echo "Release tag: $RELEASE_TAG"
+        echo "Release SHA: $RELEASE_SHA"
+        echo "Prerelease: $PRERELEASE"
 
-          echo "Release tag: $RELEASE_TAG"
-          echo "Release SHA: $RELEASE_SHA"
-          echo "Prerelease: $PRERELEASE"
+        # Never overwrite an existing GitHub Release.
+        if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+          echo "Release $RELEASE_TAG already exists; refusing to overwrite published artifacts." >&2
+          exit 1
+        fi
 
-          # Never overwrite an existing GitHub Release.
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo "Release $RELEASE_TAG already exists; refusing to overwrite published artifacts." >&2
+        # Check whether the tag exists.
+        # Important: use the command exit status instead of treating a 404
+        # response body as tag metadata.
+        if ref_info=$(
+          gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" \
+            --jq '[.object.type, .object.sha] | @tsv' \
+            2>/dev/null
+        ); then
+          IFS=$'\t' read -r object_type object_sha <<< "$ref_info"
+
+          echo "Tag $RELEASE_TAG already exists."
+          echo "Tag object type: $object_type"
+          echo "Tag object SHA:  $object_sha"
+
+          # Peel annotated tags until the underlying commit is reached.
+          while [[ "$object_type" == "tag" ]]; do
+            tag_info=$(
+              gh api "repos/$GH_REPO/git/tags/$object_sha" \
+                --jq '[.object.type, .object.sha] | @tsv'
+            )
+
+            IFS=$'\t' read -r object_type object_sha <<< "$tag_info"
+
+            echo "Resolved tag object type: $object_type"
+            echo "Resolved tag object SHA:  $object_sha"
+          done
+
+          if [[ "$object_type" != "commit" ]]; then
+            echo "Tag $RELEASE_TAG does not ultimately reference a commit." >&2
+            echo "Resolved object type: $object_type" >&2
             exit 1
           fi
 
-          # Read the existing Git ref, if present.
-          ref_info=$(
-            gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" \
-              --jq '[.object.type, .object.sha] | @tsv' \
-              2>/dev/null || true
-          )
-
-          if [[ -n "$ref_info" ]]; then
-            IFS=$'\t' read -r object_type object_sha <<< "$ref_info"
-
-            echo "Tag $RELEASE_TAG already exists."
-            echo "Tag object type: $object_type"
-            echo "Tag object SHA:  $object_sha"
-
-            # Peel annotated tags until the underlying object is reached.
-            while [[ "$object_type" == "tag" ]]; do
-              tag_info=$(
-                gh api "repos/$GH_REPO/git/tags/$object_sha" \
-                  --jq '[.object.type, .object.sha] | @tsv'
-              )
-
-              IFS=$'\t' read -r object_type object_sha <<< "$tag_info"
-
-              echo "Resolved tag object type: $object_type"
-              echo "Resolved tag object SHA:  $object_sha"
-            done
-
-            if [[ "$object_type" != "commit" ]]; then
-              echo "Tag $RELEASE_TAG does not ultimately reference a commit." >&2
-              echo "Resolved object type: $object_type" >&2
-              exit 1
-            fi
-
-            if [[ "$object_sha" != "$RELEASE_SHA" ]]; then
-              echo "Tag $RELEASE_TAG points to another commit." >&2
-              echo "Expected: $RELEASE_SHA" >&2
-              echo "Actual:   $object_sha" >&2
-              exit 1
-            fi
-
-            echo "Tag $RELEASE_TAG points to the expected commit."
-          else
-            echo "Creating tag $RELEASE_TAG at $RELEASE_SHA"
-
-            gh api \
-              --method POST \
-              "repos/$GH_REPO/git/refs" \
-              -f ref="refs/tags/$RELEASE_TAG" \
-              -f sha="$RELEASE_SHA" \
-              >/dev/null
-
-            echo "Created tag $RELEASE_TAG."
+          if [[ "$object_sha" != "$RELEASE_SHA" ]]; then
+            echo "Tag $RELEASE_TAG points to another commit." >&2
+            echo "Expected: $RELEASE_SHA" >&2
+            echo "Actual:   $object_sha" >&2
+            exit 1
           fi
 
-          flags=()
+          echo "Tag $RELEASE_TAG points to the expected commit."
 
-          if [[ "$PRERELEASE" == "true" || "$RELEASE_TAG" == *-* ]]; then
-            flags+=(--prerelease)
-          fi
+        else
+          echo "Tag $RELEASE_TAG does not exist."
+          echo "Creating tag $RELEASE_TAG at $RELEASE_SHA"
 
-          echo "Creating GitHub Release $RELEASE_TAG"
+          gh api \
+            --method POST \
+            "repos/$GH_REPO/git/refs" \
+            -f ref="refs/tags/$RELEASE_TAG" \
+            -f sha="$RELEASE_SHA" \
+            >/dev/null
 
-          gh release create "$RELEASE_TAG" \
-            artifacts/* \
-            --verify-tag \
-            --title "RemoteUSB $RELEASE_TAG" \
-            --generate-notes \
-            "${flags[@]}"
+          echo "Created tag $RELEASE_TAG."
+        fi
 
-          echo "Published RemoteUSB $RELEASE_TAG."
+        flags=()
+
+        if [[ "$PRERELEASE" == "true" || "$RELEASE_TAG" == *-* ]]; then
+          flags+=(--prerelease)
+        fi
+
+        echo "Creating GitHub Release $RELEASE_TAG"
+
+        gh release create "$RELEASE_TAG" \
+          artifacts/* \
+          --verify-tag \
+          --title "RemoteUSB $RELEASE_TAG" \
+          --generate-notes \
+          "${flags[@]}"
+
+        echo "Published RemoteUSB $RELEASE_TAG."
