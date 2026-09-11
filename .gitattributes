@@ -1,8 +1,0 @@
-vendor/usbip-win2/LICENSE.txt -text
-vendor/usbipd-win/COPYING.md -text
-vendor/usbipd-win/DRIVER-SOURCES.md -text
-vendor/usbipd-win/WSL-SOURCES.md -text
-
-vendor/**/*.exe binary
-vendor/**/*.msi binary
-vendor/**/*.zip binary
