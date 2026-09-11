@@ -19,10 +19,10 @@ export const catalog: Record<string, [string, string, string, string]> = {
     "已连接的客户端",
   ],
   sharingNotice: [
-    "Sharing uses usbipd-win and persists after closing this app. Remote clients can use shared devices on your network.",
-    "共有はusbipd-winを使用し、アプリ終了後も継続します。ネットワーク上のクライアントが共有デバイスを利用できます。",
-    "공유는 usbipd-win을 사용하며 앱 종료 후에도 유지됩니다. 네트워크의 클라이언트가 공유 장치를 사용할 수 있습니다.",
-    "共享使用 usbipd-win，关闭应用后仍会保留。网络中的客户端可以使用共享设备。",
+  "Clients on the network can continue using shared devices after the app is closed.",
+  "アプリ終了後もネットワーク上のクライアントが共有デバイスを利用できます。",
+  "앱 종료 후에도 네트워크의 클라이언트가 공유 장치를 계속 사용할 수 있습니다.",
+  "关闭应用后，网络中的客户端仍可继续使用共享设备。",
   ],
   shareConfirm: [
     "Allow network clients to use this device? Windows will request administrator permission.",
