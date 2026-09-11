@@ -110,7 +110,15 @@ test("Electron: Ant Design CRUD, connection, persistence, languages and scaling"
       card.getByRole("button", { name: "Disconnect", exact: true }),
     ).toBeEnabled();
 
-    await card.getByRole("switch").check();
+    const autoReconnect = card.getByRole("switch", {
+      name: "Auto reconnect",
+      exact: true,
+    });
+    await expect(autoReconnect).not.toBeChecked();
+    // The controlled switch updates after main-process IPC, not during the click.
+    // check() checks immediately; the assertion below retries until IPC is reflected.
+    await autoReconnect.click();
+    await expect(autoReconnect).toBeChecked();
     await card.getByRole("button", { name: "Disconnect", exact: true }).click();
 
     await expect(card.getByRole("status")).toHaveText("Available");
