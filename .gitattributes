@@ -1,5 +1,7 @@
-vendor/usbipd-win/*.md text eol=lf
-vendor/usbip-win2/*.txt text eol=lf
+vendor/usbipd-win/COPYING.md text eol=lf
+vendor/usbipd-win/DRIVER-SOURCES.md text eol=lf
+vendor/usbipd-win/WSL-SOURCES.md text eol=lf
+vendor/usbip-win2/LICENSE.txt text eol=lf
 
 vendor/**/*.exe binary
 vendor/**/*.msi binary
