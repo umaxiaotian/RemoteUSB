@@ -47,6 +47,7 @@ export function ServerDialog({
   }
   return (
     <Modal
+      centered
       open
       title={t(server ? "Edit USB Server" : "Add USB Server")}
       onCancel={onClose}

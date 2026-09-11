@@ -30,3 +30,29 @@ if (
 )
   throw Error("Source contains signing key");
 console.log("usbip-win2 installer, source and license hashes verified.");
+const serverBase = resolve("vendor/usbipd-win");
+const serverManifest = JSON.parse(
+  await readFile(resolve(serverBase, "manifest.json"), "utf8"),
+);
+for (const name of [
+  "usbipd-win_5.3.0_x64.msi",
+  "source-5.3.0.zip",
+  "COPYING.md",
+  "DRIVER-SOURCES.md",
+  "WSL-SOURCES.md",
+]) {
+  if (!serverManifest.files[name])
+    throw Error("Missing server vendor entry: " + name);
+}
+for (const [name, expected] of Object.entries(serverManifest.files)) {
+  const path = resolve(serverBase, name);
+  if (!path.startsWith(serverBase + sep))
+    throw Error("Unsafe server vendor path");
+  if (
+    createHash("sha256")
+      .update(await readFile(path))
+      .digest("hex") !== expected
+  )
+    throw Error("Server vendor hash mismatch: " + name);
+}
+console.log("usbipd-win MSI, source and license hashes verified.");

@@ -50,6 +50,31 @@ test("Electron: Ant Design CRUD, connection, persistence, languages and scaling"
       await page.evaluate(() => typeof Reflect.get(window, "process")),
     ).toBe("undefined");
 
+    await page
+      .getByRole("menuitem", { name: "Shared Devices", exact: true })
+      .click();
+    const local = page.getByRole("article", {
+      name: "USB Serial CH340",
+      exact: true,
+    });
+    await expect(local.getByRole("status")).toHaveText("Not shared");
+    await local.getByRole("button", { name: "Share", exact: true }).click();
+    const sharingDialog = page.getByRole("dialog");
+    await expect(sharingDialog).toBeVisible();
+    await expect(
+      page.locator(".ant-modal-wrap.ant-modal-centered:visible"),
+    ).toBeVisible();
+    await sharingDialog
+      .getByRole("button", { name: "Share", exact: true })
+      .click();
+    await expect(local.getByRole("status")).toHaveText("Shared");
+    await local
+      .getByRole("button", { name: "Stop Sharing", exact: true })
+      .click();
+    await sharingDialog
+      .getByRole("button", { name: "Stop Sharing", exact: true })
+      .click();
+    await expect(local.getByRole("status")).toHaveText("Not shared");
     await page.getByRole("menuitem", { name: "Servers", exact: true }).click();
     await page.getByRole("button", { name: "Add Server", exact: true }).click();
 
@@ -85,7 +110,15 @@ test("Electron: Ant Design CRUD, connection, persistence, languages and scaling"
       card.getByRole("button", { name: "Disconnect", exact: true }),
     ).toBeEnabled();
 
-    await card.getByRole("switch").check();
+    const autoReconnect = card.getByRole("switch", {
+      name: "Auto reconnect",
+      exact: true,
+    });
+    await expect(autoReconnect).not.toBeChecked();
+    // The controlled switch updates after main-process IPC, not during the click.
+    // check() checks immediately; the assertion below retries until IPC is reflected.
+    await autoReconnect.click();
+    await expect(autoReconnect).toBeChecked();
     await card.getByRole("button", { name: "Disconnect", exact: true }).click();
 
     await expect(card.getByRole("status")).toHaveText("Available");

@@ -130,3 +130,9 @@ See [architecture details](docs/architecture.md) (Japanese). The app enables con
 ## License
 
 RemoteUSB is [MIT licensed](LICENSE). usbip-win2 is BSD-2-Clause; its copyright, license, unmodified installer and matching source are included. Public development signing keys are omitted from the source copy. Preserve bundled notices when redistributing. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Sharing local USB devices
+
+Open **Shared Devices** to list USB devices connected to this PC and share or stop sharing them using [usbipd-win](https://github.com/dorssel/usbipd-win). The official usbipd-win 5.3.0 MSI is bundled in vendor/usbipd-win. Select the server option on the installer’s USB components page, or open the bundled server tools from Shared Devices. Client and server setup run sequentially; both are selected by default and can be unchecked. RemoteUSB detects it in Program Files or PATH. The page displays Bus ID, VID:PID, sharing state and the connected client, if any.
+
+Share/Stop Sharing opens a centered confirmation dialog and requests administrator permission through Windows UAC for that operation only. Sharing persists after RemoteUSB closes. Stopping sharing may disconnect a remote client. Use a trusted network and configure the usbipd service/firewall appropriately. Demo Mode simulates these operations without changing the machine. Real hardware and UAC interaction require manual verification. See [server implementation notes](docs/usb-server.md).

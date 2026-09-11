@@ -10,7 +10,7 @@
   "packageManager": "pnpm@10.32.1",
   "scripts": {
     "postinstall": "node node_modules/electron/install.js",
-    "vendor:fetch": "node scripts/fetch-usbip.mjs",
+    "vendor:fetch": "node scripts/fetch-usbip.mjs && node scripts/fetch-usbipd.mjs",
     "vendor:verify": "node scripts/verify-vendor.mjs",
     "dev": "electron-vite dev",
     "dev:mock": "cross-env REMOTEUSB_BACKEND=mock electron-vite dev",
@@ -61,6 +61,17 @@
       "output": "release"
     },
     "extraResources": [
+      {
+        "from": "vendor/usbipd-win",
+        "to": "vendor/usbipd-win",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "scripts/install-server.ps1",
+        "to": "driver-setup/install-server.ps1"
+      },
       {
         "from": "vendor/usbip-win2",
         "to": "vendor/usbip-win2",

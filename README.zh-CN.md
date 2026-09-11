@@ -130,3 +130,9 @@ Windows CI 运行 lint、类型检查、测试、构建和 E2E。这些检查通
 ## 许可证
 
 RemoteUSB 采用 [MIT 许可证](LICENSE)。usbip-win2 采用 BSD-2-Clause，附带版权声明、许可证、未经修改的安装程序及对应源代码。源代码副本已排除公开的开发签名密钥。重新分发时请保留附带声明。参阅[第三方软件声明](THIRD_PARTY_NOTICES.md)。
+
+## 共享本地 USB 设备
+
+打开 **USB 共享**页面，通过 [usbipd-win](https://github.com/dorssel/usbipd-win)查看、共享或停止共享此电脑上的 USB 设备。官方 usbipd-win 5.3.0 MSI 已包含在 vendor/usbipd-win 中。可在安装向导的 USB 组件页面选择服务器，或从 USB 共享页面打开附带工具。客户端和服务器按顺序安装，默认都选中，可取消不需要的组件。应用从 Program Files 或 PATH 中查找，显示 Bus ID、VID:PID、共享状态及已连接的客户端。
+
+共享操作会显示居中的确认对话框，并仅为该操作通过 Windows UAC 请求管理员权限。关闭应用后共享仍会保留，停止共享可能断开远程客户端。请在可信网络中配置 usbipd 服务和防火墙。演示模式不会修改电脑。实际硬件及 UAC 操作仍需手动验证。参阅[实现说明](docs/usb-server.md)。
