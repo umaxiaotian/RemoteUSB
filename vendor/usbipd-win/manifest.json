@@ -1,0 +1,24 @@
+{
+  "project": "dorssel/usbipd-win",
+  "version": "5.3.0",
+  "license": "GPL-3.0-only",
+  "artifacts": [
+    {
+      "name": "usbipd-win_5.3.0_x64.msi",
+      "url": "https://github.com/dorssel/usbipd-win/releases/download/v5.3.0/usbipd-win_5.3.0_x64.msi",
+      "sha256": "1c984914aec944de19b64eff232421439629699f8138e3ddc29301175bc6d938"
+    },
+    {
+      "name": "source-5.3.0.zip",
+      "url": "https://api.github.com/repos/dorssel/usbipd-win/zipball/v5.3.0",
+      "sha256": "6fdf3db4824f2df9a7c93f6031bf2bea96d8bd5f65777ca6a66e0a35a3f39fb7"
+    }
+  ],
+  "files": {
+    "usbipd-win_5.3.0_x64.msi": "1c984914aec944de19b64eff232421439629699f8138e3ddc29301175bc6d938",
+    "source-5.3.0.zip": "6fdf3db4824f2df9a7c93f6031bf2bea96d8bd5f65777ca6a66e0a35a3f39fb7",
+    "COPYING.md": "33bc26d4498c183b703d1760ee45b8774d21d6e0178ca393dc715271840c7a21",
+    "DRIVER-SOURCES.md": "50e74d938e31fe0fa9c2e7a73d8440bcca8e9668aded2c36b5160ea1aa79863a",
+    "WSL-SOURCES.md": "78cbc7e5d756c6580fafd91fe745c6d93041eae43d3f2890118722340a3483b6"
+  }
+}

@@ -28,6 +28,10 @@ import {
 } from "../../../../packages/usb-backend/mock-backend";
 import { UsbipWinBackend } from "../../../../packages/usb-backend/usbip-win-backend";
 import { UsbService } from "./service";
+import { UsbipdBackend } from "../../../../packages/usb-server/usbipd-backend";
+import { MockUsbServerBackend } from "../../../../packages/usb-server/mock-backend";
+const usbServer = new UsbipdBackend();
+const mockServer = new MockUsbServerBackend();
 import { Store } from "./store";
 import { Logger } from "./logger";
 import {
@@ -170,6 +174,24 @@ async function start() {
         const request = requestSchema.parse(input);
         let deviceCount: number | undefined;
         switch (request.action) {
+          case "localDevices":
+          case "shareDevice": {
+            const backend =
+              service.snapshot().mode === "mock" ? mockServer : usbServer;
+            const sharing =
+              request.action === "localDevices"
+                ? await backend.list()
+                : await backend.setShared(
+                    request.busId,
+                    request.instanceId,
+                    request.shared,
+                  );
+            return responseSchema.parse({
+              ok: true,
+              snapshot: service.snapshot(),
+              sharing,
+            });
+          }
           case "snapshot":
             break;
           case "refresh":
@@ -245,7 +267,11 @@ async function start() {
             break;
           }
           case "demo": {
-            if (service.connections.length || service.isBusy())
+            if (
+              service.connections.length ||
+              service.isBusy() ||
+              usbServer.isBusy()
+            )
               throw new UsbBackendError("DEVICE_BUSY", "Disconnect first");
             const demoStore = new Store(join(dataDir, "demo.json"));
             if (!demoStore.data.servers.length)
@@ -264,15 +290,24 @@ async function start() {
             break;
           }
           case "openLink": {
-            if (request.target === "licenses")
+            if (request.target === "serverTools") {
+              const error = await shell.openPath(
+                join(vendorPath(), "..", "usbipd-win"),
+              );
+              if (error) throw new Error(error);
+            } else if (request.target === "serverGuide")
+              await shell.openExternal(
+                "https://github.com/dorssel/usbipd-win#how-to-use",
+              );
+            else if (request.target === "licenses")
               await dialog.showMessageBox(window, {
                 title: localize("licenses"),
                 message: "RemoteUSB — MIT",
                 detail:
-                  "Ant Design, i18next, React, Electron, Zod: MIT\nLucide: ISC\nusbip-win2 0.9.8.0: BSD-2-Clause\n" +
+                  "Ant Design, i18next, React, Electron, Zod: MIT\nLucide: ISC\nusbip-win2 0.9.8.0: BSD-2-Clause\nusbipd-win 5.3.0: GPL-3.0-only\n" +
                   localize("sourceCode") +
                   ": " +
-                  vendorPath(),
+                  join(vendorPath(), ".."),
               });
             else if (request.target === "guide")
               await dialog.showMessageBox(window, {
@@ -287,7 +322,11 @@ async function start() {
               request.target === "tools" ||
               request.target === "sources"
             ) {
-              const error = await shell.openPath(vendorPath());
+              const error = await shell.openPath(
+                request.target === "sources"
+                  ? join(vendorPath(), "..")
+                  : vendorPath(),
+              );
               if (error) throw new Error(error);
             } else
               await shell.openExternal(
@@ -400,7 +439,7 @@ function changed() {
 }
 async function exit() {
   if (quitting) return;
-  if (service.isBusy()) {
+  if (service.isBusy() || usbServer.isBusy()) {
     notify("waitOperation");
     return;
   }

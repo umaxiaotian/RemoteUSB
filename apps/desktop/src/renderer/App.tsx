@@ -31,6 +31,7 @@ import { Welcome } from "./components/Welcome";
 import { Settings } from "./pages/Settings";
 import { Devices } from "./pages/Devices";
 import { Connections } from "./pages/Connections";
+import { SharedDevices } from "./pages/SharedDevices";
 import type {
   UsbServer,
   RemoteUsbDevice,
@@ -39,6 +40,7 @@ const navigation = [
   { key: "Devices", icon: Usb, subtitle: "deviceSubtitle" },
   { key: "Servers", icon: Server, subtitle: "serverSubtitle" },
   { key: "Connections", icon: Link2, subtitle: "connectionSubtitle" },
+  { key: "Shared Devices", icon: Usb, subtitle: "sharingSubtitle" },
   { key: "Settings", icon: Settings2, subtitle: "settingsSubtitle" },
   { key: "About", icon: Info, subtitle: "aboutSubtitle" },
 ];
@@ -131,7 +133,7 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
               </div>
             </div>
           </div>
-          {[navigation.slice(0, 3), navigation.slice(3)].map((items, index) => (
+          {[navigation.slice(0, 4), navigation.slice(4)].map((items, index) => (
             <Menu
               key={index}
               className={index ? "secondary-menu" : ""}
@@ -250,7 +252,7 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
                   title={t("testSuccess", { count: deviceCount })}
                 />
               )}
-              {!data.backend.ready && (
+              {!data.backend.ready && page !== "Shared Devices" && (
                 <Alert
                   type="warning"
                   showIcon
@@ -267,6 +269,7 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
             {page === "Devices" && (
               <Devices data={data} card={card} onAdd={() => setDialog({})} />
             )}
+            {page === "Shared Devices" && <SharedDevices request={request} />}
             {page === "Servers" && (
               <Space orientation="vertical" className="server-list">
                 {data.servers.map((server) => (

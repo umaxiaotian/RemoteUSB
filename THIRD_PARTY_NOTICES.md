@@ -36,3 +36,7 @@ RemoteUSB本体はMIT Licenseです。BSD-2-Clauseのusbip-win2公式インス�
 ## Distribution audit
 
 `pnpm licenses list --json` で直接・推移依存のライセンス一覧を取得できます。リリース前にロックファイルと配布内容の対応を確認してください。
+
+## Bundled USB/IP server
+
+usbipd-win 5.3.0 is GPL-3.0-only. The official MSI is redistributed unmodified with matching tag source, COPYING.md, and driver/WSL source-access notices under vendor/usbipd-win. These materials are also attached to GitHub Releases. Preserve the full license, copyright notices and corresponding source access when distributing. See vendor/usbipd-win/README.md. The upstream MSI installs its service, drivers and firewall rule; RemoteUSB invokes its CLI as a separate process.

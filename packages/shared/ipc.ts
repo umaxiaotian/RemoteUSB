@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { localBusIdSchema, sharingStateSchema } from "../usb-server/models";
 import {
   idSchema,
   serverSchema,
@@ -11,6 +12,13 @@ export const IPC = {
   changed: "remoteusb:changed",
 } as const;
 export const requestSchema = z.discriminatedUnion("action", [
+  z.object({ action: z.literal("localDevices") }),
+  z.object({
+    action: z.literal("shareDevice"),
+    busId: localBusIdSchema,
+    instanceId: z.string().min(1).max(2048),
+    shared: z.boolean(),
+  }),
   z.object({ action: z.literal("snapshot") }),
   z.object({ action: z.literal("refresh") }),
   z.object({ action: z.literal("saveServer"), server: serverSchema }),
@@ -28,7 +36,15 @@ export const requestSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("demo") }),
   z.object({
     action: z.literal("openLink"),
-    target: z.enum(["guide", "github", "licenses", "tools", "sources"]),
+    target: z.enum([
+      "guide",
+      "github",
+      "licenses",
+      "tools",
+      "sources",
+      "serverGuide",
+      "serverTools",
+    ]),
   }),
 ]);
 export type Request = z.infer<typeof requestSchema>;
@@ -36,6 +52,7 @@ export const responseSchema = z.discriminatedUnion("ok", [
   z.object({
     ok: z.literal(true),
     snapshot: snapshotSchema,
+    sharing: sharingStateSchema.optional(),
     deviceCount: z.number().int().nonnegative().optional(),
   }),
   z.object({ ok: z.literal(false), error: errorSchema }),
