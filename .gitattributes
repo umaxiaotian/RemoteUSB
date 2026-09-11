@@ -1,0 +1,6 @@
+vendor/usbipd-win/*.md text eol=lf
+vendor/usbip-win2/*.txt text eol=lf
+
+vendor/**/*.exe binary
+vendor/**/*.msi binary
+vendor/**/*.zip binary
