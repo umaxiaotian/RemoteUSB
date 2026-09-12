@@ -110,7 +110,6 @@
       "THIRD_PARTY_NOTICES.md",
       "LICENSE"
     ],
-    "license": "build/installer-eula.txt",
     "win": {
       "icon": "build/icon.ico",
       "target": [
@@ -130,6 +129,7 @@
       "uninstallerIcon": "build/icon.ico",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
+      "license": "build/installer-eula.txt",
       "artifactName": "RemoteUSB-Setup-${version}.${ext}"
     }
   }
