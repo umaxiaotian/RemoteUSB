@@ -63,20 +63,22 @@ try {
             $null = $detach.Handle
             if (-not $detach.WaitForExit(30000)) {
                 $detach.Kill()
-                if (-not $detach.WaitForExit(10000)) { throw 'USBip detach could not be stopped. Restart Windows and retry removal.' }
-                Write-RemovalMessage 'USBip detach timed out; continuing with the official uninstaller.'
+                if (-not $detach.WaitForExit(10000)) { throw 'USBip detach could not be stopped. Driver removal was cancelled; collect diagnostics before restarting Windows.' }
+                throw 'USBip detach timed out. Driver removal was cancelled to avoid removing a controller with pending I/O.'
             }
             $detach.Refresh()
-            # A missing/already removed virtual controller can make detach fail.
-            # Still let the official uninstaller repair this partial state.
-            if ($detach.ExitCode -ne 0) { Write-RemovalMessage "USBip detach returned $($detach.ExitCode); continuing with the official uninstaller." }
+            # Process termination does not prove that kernel I/O has drained.
+            # Keep the official uninstaller (and its shutdown task) intact on failure.
+            if ($detach.ExitCode -ne 0) { throw "USBip detach returned $($detach.ExitCode). Driver removal was cancelled. Repair USBip if its controller is missing, then retry." }
+        } elseif (Get-Service -Name usbip2_ude -ErrorAction SilentlyContinue) {
+            throw 'USBip CLI is missing while its controller driver remains. Repair USBip before retrying removal.'
         }
         $log = Join-Path $env:TEMP ('RemoteUSB-usbip-uninstall-' + [Guid]::NewGuid() + '.log')
         Write-RemovalMessage "Removing USBip. Log: $log"
         $child = Start-Process -FilePath $uninstaller -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', ('/LOG="' + $log + '"')) -WindowStyle Hidden -PassThru
         $null = $child.Handle
         if (-not $child.WaitForExit(300000)) {
-            throw "USBip uninstall has not finished after 5 minutes (PID $($child.Id)). Restart Windows before retrying. Log: $log"
+            throw "USBip uninstall has not finished after 5 minutes (PID $($child.Id)). The uninstaller may still be running; do not start another removal or restart Windows while it is active. Collect this log for diagnosis: $log"
         }
         $child.Refresh()
         if ($child.ExitCode -notin @(0, 3010)) { throw "USBip uninstall returned $($child.ExitCode)." }
