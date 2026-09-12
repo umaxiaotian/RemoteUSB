@@ -18,7 +18,7 @@ RemoteUSB does not modify, rebuild, or re-sign the upstream executable, installe
 
 Installation requires administrator permission. The USB/IP components may install signed drivers, a Windows service, PATH entries, and firewall rules. USB devices may be temporarily interrupted during driver installation. Complete important USB transfers before continuing.
 
-The installer does not download files from the Internet. Existing USB/IP installations and drivers are not removed by uninstalling RemoteUSB. RemoteUSB does not disable Secure Boot or require Windows Test Mode.
+The installer does not download files from the Internet. When uninstalling RemoteUSB, you can choose whether to remove USBip, its client drivers and usbipd-win, including existing installations. Silent uninstall and application updates keep these components. RemoteUSB does not disable Secure Boot or require Windows Test Mode.
 
 4. Warranty and responsibility
 

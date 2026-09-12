@@ -40,7 +40,6 @@ export const stateSchema = z.enum([
   "Unavailable",
   "Error",
 ]);
-export type DeviceConnectionState = z.infer<typeof stateSchema>;
 export const typeSchema = z.enum([
   "Serial",
   "Storage",
@@ -109,7 +108,6 @@ export const reconnectSchema = z.object({
   nextAttemptAt: z.number(),
   status: z.enum(["idle", "waiting", "connected", "paused"]),
 });
-export type ReconnectPolicy = z.infer<typeof reconnectSchema>;
 export const persistedSchema = z.object({
   version: z.literal(1).default(1),
   servers: z.array(serverSchema).default([]),
