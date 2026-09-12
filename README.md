@@ -48,7 +48,7 @@ The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.3.exe`. RemoteUS
 
 The installer bundles the unmodified official usbip-win2 x64 setup and usbipd-win x64 MSI. The NSIS installer verifies the pinned vendor assets, then runs both upstream installers locally. The client installer uses the upstream `main,client` components and VC++ runtime, including the signed client driver package. No GitHub download is performed during installation.
 
-**USBip installation can briefly restart USB hubs and interrupt USB devices. Finish USB storage transfers and calls beforehand.** RemoteUSB does not change Secure Boot or test-signing settings. USBip is installed independently and is not removed when RemoteUSB is uninstalled.
+**USB/IP installation can briefly restart USB hubs and interrupt USB devices. Finish USB storage transfers and calls beforehand.** RemoteUSB does not change Secure Boot or test-signing settings. During uninstall, RemoteUSB asks whether to remove the USB/IP components it installed. Components that were already present before RemoteUSB are not removed.
 
 The EXE, installer and tray use the RemoteUSB icon. The installer registers the notification name as RemoteUSB; development runs through Electron may display a different notification source.
 

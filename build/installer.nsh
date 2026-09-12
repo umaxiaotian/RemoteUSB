@@ -48,6 +48,15 @@ FunctionEnd
 
 !macro customUnInstall
   DeleteRegKey SHCTX "Software\Classes\AppUserModelId\io.remoteusb.desktop"
-  ; USBip and usbipd-win are independently installed and may be used by other apps.
+  IfSilent usb_uninstall_done
+  MessageBox MB_YESNO|MB_ICONQUESTION "Remove the USB/IP client, signed driver and server installed by RemoteUSB? Existing components not installed by RemoteUSB will not be removed.$\r$\nRemoteUSBが導入したUSB/IPクライアント、署名済みドライバー、サーバーを削除しますか？RemoteUSB以外が導入したコンポーネントは削除しません。" IDNO usb_uninstall_done IDYES usb_remove_components
+  usb_remove_components:
+  nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-server.ps1"'
+  Pop $0
+  Pop $1
+  nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-driver.ps1"'
+  Pop $0
+  Pop $1
+  usb_uninstall_done:
 !macroend
 
