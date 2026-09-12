@@ -10,6 +10,8 @@ Run these checks in a disposable Windows VM with the packaged installer. The scr
 | Make an official uninstaller exceed five minutes | Failure displays a log path; RemoteUSB, its registration, and retry scripts remain. Restart before retrying. |
 | Run per-user removal and approve UAC using an administrator account; provoke an uninstall error | The original window shows the elevated error and log path. |
 | Cancel UAC | Removal fails and RemoteUSB remains available for retry. |
+| A non-product-code server registry entry exists before uninstall and is removed by the official MSI | Removal succeeds; pre-uninstall registration must not cause a false failure. |
+| A server registry entry genuinely survives the official MSI | Removal fails with the remaining registry path/product code and retains RemoteUSB for retry. |
 | Remove the server Apps entry while keeping MSI registration | Windows Installer product discovery still finds the server. |
 | Damage a client UninstallString while preserving InstallLocation or the default install directory | The existing official uninstaller is found through the fallback directory. |
 | Add a stale client entry pointing at a missing executable alongside a valid entry | The valid uninstaller runs; any remaining stale registration is reported as a repair requirement. |

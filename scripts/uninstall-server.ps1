@@ -47,10 +47,10 @@ try {
         if ($service.Status -ne 'StopPending') { $service.Stop() }
         $service.WaitForStatus([ServiceProcess.ServiceControllerStatus]::Stopped, [TimeSpan]::FromSeconds(30))
     }
-    $invalidRegistration = $false
     foreach ($server in $servers) {
         if ($server.PSChildName -notmatch '^\{[0-9A-Fa-f-]{36}\}$') {
-            $invalidRegistration = $true
+            # This may be an auxiliary entry removed by the official MSI.
+            Write-RemovalMessage "Deferring non-MSI registration check: $($server.PSChildName)"
             continue
         }
         $directories = @(
@@ -83,9 +83,20 @@ try {
         $child.Refresh()
         if ($child.ExitCode -notin @(0, 1605, 3010)) { throw "usbipd-win uninstall returned $($child.ExitCode)." }
         if ($child.ExitCode -eq 3010) { $restartRequired = $true }
-        if ($server.PSPath -and (Test-Path -LiteralPath $server.PSPath)) { throw 'usbipd-win is still registered after its uninstaller finished.' }
     }
-    if ($invalidRegistration) { throw 'A damaged usbipd-win registration remains. Repair/reinstall usbipd-win, then retry removal.' }
+    # Inspect current state, not the pre-uninstall snapshot. Auxiliary entries
+    # without a product-code key can disappear during a successful MSI removal.
+    $remainingProducts = @(Get-ItemProperty 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*','HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -like 'usbipd-win*' })
+    $remainingMsiCodes = @(
+        foreach ($product in $windowsInstaller.ProductsEx('', '', 4)) {
+            if ($product.InstallProperty('ProductName') -like 'usbipd-win*') { $product.ProductCode }
+        }
+    )
+    if ($remainingProducts.Count -gt 0 -or $remainingMsiCodes.Count -gt 0) {
+        $remainingKeys = ($remainingProducts | ForEach-Object { $_.PSPath }) -join '; '
+        throw "usbipd-win registration remains after removal. Registry: $remainingKeys MSI: $($remainingMsiCodes -join ', '). Repair/reinstall usbipd-win, then retry removal."
+    }
     $remainingService = Get-Service -Name usbipd -ErrorAction SilentlyContinue
     $serverFile = Join-Path $env:ProgramFiles 'usbipd-win/usbipd.exe'
     if (-not $restartRequired -and ($remainingService -or (Test-Path -LiteralPath $serverFile))) {
