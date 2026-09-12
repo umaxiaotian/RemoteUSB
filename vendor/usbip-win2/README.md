@@ -12,7 +12,7 @@ RemoteUSB runs USBip-0.9.8.0-x64.exe during installation with the required clien
 
 RemoteUSB finds the installed CLI in Program Files/USBip/usbip.exe, then PATH. For a custom installation directory, select the absolute usbip.exe path in Settings. The CLI's DLLs must stay with it. Restart/refresh RemoteUSB after installation.
 
-公式インストーラーを未改変で同梱しています。RemoteUSBのインストーラーで導入を選ぶか、このフォルダーのUSBipインストーラーを実行してください。管理者権限が必要で、導入中はUSBハブの再起動によりUSB機器が一時的に停止します。カスタム導入先はRemoteUSBの設定でusbip.exeを指定してください。RemoteUSBの削除ではUSBipを削除しません。Windowsの「インストールされているアプリ」から個別に管理できます。
+公式インストーラーを未改変で同梱しています。RemoteUSBのインストーラーが導入します。管理者権限が必要で、導入中はUSBハブの再起動によりUSB機器が一時的に停止します。アンインストール時は、RemoteUSBが導入したUSBipを削除するか確認します。既存の導入物は削除しません。
 
 usbip-win2 is a Windows **client**. It has no usbipd.exe server or legacy attacher.exe. The old cezanne 0.3.5 development-driver bundle is no longer shipped. Configure the server separately (e.g. Linux usbipd).
 

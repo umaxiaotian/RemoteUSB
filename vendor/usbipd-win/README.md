@@ -5,11 +5,11 @@ Unmodified official MSI: https://github.com/dorssel/usbipd-win/releases/tag/v5.3
 This is the Windows USB/IP **server**, separate from the usbip-win2 client.
 RemoteUSB runs the unmodified official MSI during installation with administrator permission. The MSI handles the complete server service, drivers, PATH and firewall rule; RemoteUSB does not share any device automatically. Refresh Shared Devices after setup.
 
-The installer is also available in this folder for repair/retry. USBip and usbipd-win setups run sequentially in every RemoteUSB installation mode. Removing RemoteUSB does not remove these separately installed products or their persistent sharing configuration.
+The installer is also available in this folder for repair/retry. USBip and usbipd-win setups run sequentially in every RemoteUSB installation mode. During uninstall, RemoteUSB asks whether to remove components it installed; pre-existing products are not removed. Persistent sharing configuration may be changed by the upstream uninstaller.
 
 ## 日本語
 
-RemoteUSBのインストーラーが共有用のusbipd-winを公式MSIで導入します。別途ダウンロードや個別選択は不要です。管理者権限でサービス・ドライバー・ファイアウォール規則を設定し、完了後にUSB共有画面を更新してください。デバイスは自動共有しません。
+RemoteUSBのインストーラーが共有用のusbipd-winを公式MSIで導入します。別途ダウンロードや個別選択は不要です。管理者権限でサービス・ドライバー・ファイアウォール規則を設定し、完了後にUSB共有画面を更新してください。デバイスは自動共有しません。アンインストール時は、RemoteUSBが導入したserverを削除するか確認します。既存の導入物は削除しません。
 
 ## Licensing and corresponding source
 

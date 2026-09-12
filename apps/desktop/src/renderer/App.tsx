@@ -154,19 +154,15 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
             <ShieldCheck size={18} />
             <div>
               {t("USB support")}
-              <div>
-                {navigation.find((item) => item.key === page)?.subtitle && (
-                  <Typography.Text type="secondary">
-                    {t(
-                      data.mode === "mock"
-                        ? "Demo mode"
-                        : data.backend.ready
-                          ? "Ready"
-                          : "setupRequired",
-                    )}
-                  </Typography.Text>
+              <Typography.Text type="secondary">
+                {t(
+                  data.mode === "mock"
+                    ? "Demo mode"
+                    : data.backend.ready
+                      ? "Ready"
+                      : "setupRequired",
                 )}
-              </div>
+              </Typography.Text>
             </div>
           </div>
         </Layout.Sider>

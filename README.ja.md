@@ -47,7 +47,7 @@ NSISインストーラーを `release/RemoteUSB-Setup-0.1.3.exe` に生成しま
 
 **公式usbip-win2 0.9.8.0 x64セットアップとusbipd-win 5.3.0 x64 MSIを未改変で同梱**しています。インストーラーはSHA-256とAuthenticode署名を確認したうえで、client・署名済みドライバー・serverを公式セットアップから導入します。GitHubからのダウンロードは行いません。
 
-**USBipの導入時はUSBハブが再起動し、USB機器が一時的に停止する場合があります。USBストレージへの転送や通話を終えてから実行してください。** RemoteUSBはSecure Bootやテスト署名を変更しません。USBipは独立したアプリとして導入され、RemoteUSBのアンインストールでは削除されません。
+**USB/IPの導入時はUSBハブが再起動し、USB機器が一時的に停止する場合があります。USBストレージへの転送や通話を終えてから実行してください。** RemoteUSBはSecure Bootやテスト署名を変更しません。アンインストール時には、RemoteUSBが導入したUSB/IPコンポーネントを削除するか確認します。RemoteUSBの導入前から存在したコンポーネントは削除しません。
 
 EXE・インストーラー・トレイにはRemoteUSBアイコンを使用し、インストーラーが通知名をRemoteUSBとして登録します。Electron経由の開発起動では通知元の表示が異なる場合があります。
 

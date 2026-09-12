@@ -81,6 +81,10 @@
         "to": "driver-setup/install-server.ps1"
       },
       {
+        "from": "scripts/uninstall-server.ps1",
+        "to": "driver-setup/uninstall-server.ps1"
+      },
+      {
         "from": "vendor-lock.json",
         "to": "vendor-lock.json"
       },
@@ -102,6 +106,10 @@
       {
         "from": "scripts/install-driver.ps1",
         "to": "driver-setup/install-driver.ps1"
+      },
+      {
+        "from": "scripts/uninstall-driver.ps1",
+        "to": "driver-setup/uninstall-driver.ps1"
       }
     ],
     "files": [
