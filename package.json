@@ -109,6 +109,7 @@
       "THIRD_PARTY_NOTICES.md",
       "LICENSE"
     ],
+    "license": "build/installer-eula.txt",
     "win": {
       "icon": "build/icon.ico",
       "target": [
