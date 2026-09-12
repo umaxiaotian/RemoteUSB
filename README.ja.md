@@ -1,5 +1,7 @@
 # RemoteUSB
 
+![RemoteUSB — Windows向けUSB/IPクライアント・サーバー](docs/social-preview.png)
+
 [English](README.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)
 
 Electron・React・TypeScript・Ant Designで構築した、Windows 11風UIのWindows向けUSB/IPクライアントです。

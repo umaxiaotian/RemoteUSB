@@ -1,5 +1,7 @@
 # RemoteUSB
 
+![RemoteUSB — USB/IP client & server for Windows](docs/social-preview.png)
+
 [English](README.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)
 
 A USB/IP desktop client for Windows with a Windows 11-style interface, built with Electron, React, TypeScript and Ant Design.

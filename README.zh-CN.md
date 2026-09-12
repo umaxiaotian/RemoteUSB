@@ -1,5 +1,7 @@
 # RemoteUSB
 
+![RemoteUSB — Windows USB/IP 客户端与服务器](docs/social-preview.png)
+
 [English](README.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)
 
 使用 Electron、React、TypeScript 和 Ant Design 构建的 Windows USB/IP 桌面客户端，采用 Windows 11 风格界面。

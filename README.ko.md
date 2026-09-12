@@ -1,5 +1,7 @@
 # RemoteUSB
 
+![RemoteUSB — Windows용 USB/IP 클라이언트 및 서버](docs/social-preview.png)
+
 [English](README.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)
 
 Electron, React, TypeScript, Ant Design으로 만든 Windows 11 스타일의 Windows용 USB/IP 데스크톱 클라이언트입니다.
