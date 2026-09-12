@@ -10,3 +10,7 @@ playwright-report/
 *.pfx
 *.p12
 .env*
+docs/.vitepress/content/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/.vitepress/.temp/

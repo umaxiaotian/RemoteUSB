@@ -1,5 +1,7 @@
 # RemoteUSB
 
+[ドキュメント](https://umaxiaotian.github.io/RemoteUSB/ja/) · [サイトの開発・公開手順（英語）](docs/documentation.md)
+
 ![RemoteUSB — Windows向けUSB/IPクライアント・サーバー](docs/social-preview.png)
 
 [English](README.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [简体中文](README.zh-CN.md)

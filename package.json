@@ -9,6 +9,9 @@
   "main": "out/main/index.js",
   "packageManager": "pnpm@10.32.1",
   "scripts": {
+    "docs:dev": "node scripts/prepare-docs.mjs && vitepress dev docs",
+    "docs:build": "node scripts/prepare-docs.mjs && vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "postinstall": "node node_modules/electron/install.js",
     "vendor:fetch": "node scripts/fetch-usbip.mjs && node scripts/fetch-usbipd.mjs",
     "vendor:verify": "node scripts/verify-vendor.mjs",
@@ -33,7 +36,6 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "prettier": "^3.9.6",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "latest",
     "@testing-library/jest-dom": "latest",
@@ -49,9 +51,11 @@
     "eslint": "^10.10.0",
     "fflate": "^0.8.3",
     "jsdom": "latest",
+    "prettier": "^3.9.6",
     "typescript": "~6.0.3",
     "typescript-eslint": "latest",
     "vite": "7.3.6",
+    "vitepress": "1.6.4",
     "vitest": "^4.1.11"
   },
   "build": {
