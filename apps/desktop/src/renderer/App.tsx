@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { author } from "../../../../package.json";
 import {
   Alert,
   Badge,
@@ -321,6 +322,9 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
                 <Typography.Title level={3}>RemoteUSB</Typography.Title>
                 <Typography.Text>
                   {t("Version", { version: data.version })}
+                </Typography.Text>
+                <Typography.Text>
+                  {t("Author")}: {author}
                 </Typography.Text>
                 <Typography.Paragraph>
                   {t("aboutSubtitle")}

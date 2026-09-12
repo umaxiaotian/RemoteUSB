@@ -1,5 +1,6 @@
 /** 各行は英語・日本語・韓国語・中国語簡体字。キーの欠落を型とテストで防ぐ。 */
 export const catalog: Record<string, [string, string, string, string]> = {
+  Author: ["Author", "作者", "개발자", "作者"],
   Status: ["Status", "状態", "상태", "状态"],
   "Shared Devices": ["Shared Devices", "USB共有", "USB 공유", "USB 共享"],
   sharingSubtitle: [
