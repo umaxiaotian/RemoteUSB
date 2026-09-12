@@ -83,23 +83,11 @@ export const catalog: Record<string, [string, string, string, string]> = {
     "이 PC에 연결된 장치입니다.",
     "已连接到此电脑的设备。",
   ],
-  settingsSubtitle: [
-    "Make RemoteUSB work your way.",
-    "使い方に合わせてRemoteUSBを設定します。",
-    "RemoteUSB를 원하는 대로 설정하세요.",
-    "按您的习惯设置 RemoteUSB。",
-  ],
   aboutSubtitle: [
     "A modern USB/IP client for Windows.",
     "Windows向けのモダンなUSB/IPクライアント。",
     "Windows용 모던 USB/IP 클라이언트.",
     "现代化的 Windows USB/IP 客户端。",
-  ],
-  tagline: [
-    "Your devices, connected.",
-    "いつものデバイスを、手元に。",
-    "내 장치를 더 가까이.",
-    "让设备触手可及。",
   ],
   Refresh: ["Refresh", "更新", "새로 고침", "刷新"],
   "Add Server": ["Add Server", "サーバーを追加", "서버 추가", "添加服务器"],

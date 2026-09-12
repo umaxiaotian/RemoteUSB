@@ -41,7 +41,7 @@ const navigation = [
   { key: "Servers", icon: Server, subtitle: "serverSubtitle" },
   { key: "Connections", icon: Link2, subtitle: "connectionSubtitle" },
   { key: "Shared Devices", icon: Usb, subtitle: "sharingSubtitle" },
-  { key: "Settings", icon: Settings2, subtitle: "settingsSubtitle" },
+  { key: "Settings", icon: Settings2 },
   { key: "About", icon: Info, subtitle: "aboutSubtitle" },
 ];
 /** データ取得を共有し、UIライブラリと言語設定を全画面に適用する。 */
@@ -126,11 +126,6 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
             </div>
             <div>
               <Typography.Text strong>RemoteUSB</Typography.Text>
-              <div>
-                <Typography.Text type="secondary">
-                  {t("tagline")}
-                </Typography.Text>
-              </div>
             </div>
           </div>
           {[navigation.slice(0, 4), navigation.slice(4)].map((items, index) => (
@@ -159,15 +154,17 @@ function Shell({ remote }: { remote: ReturnType<typeof useRemoteUsb> }) {
             <div>
               {t("USB support")}
               <div>
-                <Typography.Text type="secondary">
-                  {t(
-                    data.mode === "mock"
-                      ? "Demo mode"
-                      : data.backend.ready
-                        ? "Ready"
-                        : "setupRequired",
-                  )}
-                </Typography.Text>
+                {navigation.find((item) => item.key === page)?.subtitle && (
+                  <Typography.Text type="secondary">
+                    {t(
+                      data.mode === "mock"
+                        ? "Demo mode"
+                        : data.backend.ready
+                          ? "Ready"
+                          : "setupRequired",
+                    )}
+                  </Typography.Text>
+                )}
               </div>
             </div>
           </div>
