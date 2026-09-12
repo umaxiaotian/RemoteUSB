@@ -3,6 +3,18 @@ import { createHash } from "node:crypto";
 import { resolve, sep } from "node:path";
 import { unzipSync } from "fflate";
 
+const vendorLock = JSON.parse(
+  await readFile(resolve("vendor-lock.json"), "utf8"),
+);
+
+for (const [component, entry] of Object.entries(vendorLock)) {
+  if (!/^[\w.-]+$/.test(component) || !/^[\w.-]+$/.test(entry.asset))
+    throw Error("Unsafe vendor lock entry");
+  const assetPath = resolve("vendor", component, entry.asset);
+  if (!(await verifyHash(assetPath, entry.sha256)))
+    throw Error(`Vendor lock hash mismatch: ${component}/${entry.asset}`);
+}
+
 /**
  * Calculates a SHA-256 hash.
  *

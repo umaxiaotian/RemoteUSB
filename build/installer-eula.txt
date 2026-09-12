@@ -1,0 +1,29 @@
+RemoteUSB Installer Terms
+
+Last updated: 2026-09-12
+
+Please read these terms before installing RemoteUSB. By selecting I Agree in the installer, you accept these terms.
+
+1. RemoteUSB
+
+RemoteUSB is distributed under the MIT License. The full RemoteUSB license is included with the application and is available in the LICENSE file.
+
+2. Included USB/IP components
+
+This installer includes unmodified release packages from upstream USB/IP projects. The included usbip-win2 client and usbipd-win server are governed by their respective upstream licenses and notices. Their copyright and license information is included in the distribution.
+
+RemoteUSB does not modify, rebuild, or re-sign the upstream executable, installer, INF, CAT, SYS, or driver package files. Driver installation is performed by the official upstream installers.
+
+3. Installation and system changes
+
+Installation requires administrator permission. The USB/IP components may install signed drivers, a Windows service, PATH entries, and firewall rules. USB devices may be temporarily interrupted during driver installation. Complete important USB transfers before continuing.
+
+The installer does not download files from the Internet. Existing USB/IP installations and drivers are not removed by uninstalling RemoteUSB. RemoteUSB does not disable Secure Boot or require Windows Test Mode.
+
+4. Warranty and responsibility
+
+RemoteUSB and the included third-party components are provided according to their applicable licenses and without warranty to the extent permitted by law. Hardware compatibility, driver behavior, service operation, firewall configuration, and system changes must be evaluated on the target Windows installation.
+
+5. Third-party terms
+
+The third-party notices and license texts included with this distribution are part of the installation terms for the corresponding components. If these terms are unacceptable, select I Do Not Agree and cancel the installation.

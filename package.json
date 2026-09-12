@@ -13,7 +13,10 @@
     "docs:build": "node scripts/prepare-docs.mjs && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "postinstall": "node node_modules/electron/install.js",
-    "vendor:fetch": "node scripts/fetch-usbip.mjs && node scripts/fetch-usbipd.mjs",
+    "vendor:update": "node scripts/update-vendor.mjs",
+    "vendor:check-update": "node scripts/check-vendor-update.mjs",
+    "vendor:clean": "node scripts/clean-vendor.mjs",
+    "vendor:fetch": "pnpm vendor:update",
     "vendor:verify": "node scripts/verify-vendor.mjs",
     "dev": "electron-vite dev",
     "dev:mock": "cross-env REMOTEUSB_BACKEND=mock electron-vite dev",
@@ -22,7 +25,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "electron-vite build && playwright test",
-    "package": "node scripts/verify-vendor.mjs && electron-vite build && electron-builder --win nsis --x64",
+    "package": "pnpm vendor:verify && electron-vite build && electron-builder --win nsis --x64",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -56,6 +59,7 @@
     "typescript-eslint": "latest",
     "vite": "7.3.6",
     "vitepress": "1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17",
     "vitest": "^4.1.11"
   },
   "build": {
@@ -69,7 +73,7 @@
         "from": "vendor/usbipd-win",
         "to": "vendor/usbipd-win",
         "filter": [
-          "**/*"
+          "*.msi"
         ]
       },
       {
@@ -77,12 +81,14 @@
         "to": "driver-setup/install-server.ps1"
       },
       {
+        "from": "vendor-lock.json",
+        "to": "vendor-lock.json"
+      },
+      {
         "from": "vendor/usbip-win2",
         "to": "vendor/usbip-win2",
         "filter": [
-          "**/*",
-          "!*.pfx",
-          "!*.p12"
+          "*.exe"
         ]
       },
       {
@@ -104,6 +110,7 @@
       "THIRD_PARTY_NOTICES.md",
       "LICENSE"
     ],
+    "license": "build/installer-eula.txt",
     "win": {
       "icon": "build/icon.ico",
       "target": [

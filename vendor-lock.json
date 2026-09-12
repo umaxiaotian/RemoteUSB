@@ -1,0 +1,18 @@
+{
+  "usbip-win2": {
+    "repository": "vadimgrn/usbip-win2",
+    "version": "0.9.8.0",
+    "tag": "v.0.9.8.0",
+    "asset": "USBip-0.9.8.0-x64.exe",
+    "downloadUrl": "https://github.com/vadimgrn/usbip-win2/releases/download/v.0.9.8.0/USBip-0.9.8.0-x64.exe",
+    "sha256": "81f426741f7ee2ed991febe24a22daca8400b6ae2f171054e3fb404897e15d39"
+  },
+  "usbipd-win": {
+    "repository": "dorssel/usbipd-win",
+    "version": "5.3.0",
+    "tag": "v5.3.0",
+    "asset": "usbipd-win_5.3.0_x64.msi",
+    "downloadUrl": "https://github.com/dorssel/usbipd-win/releases/download/v5.3.0/usbipd-win_5.3.0_x64.msi",
+    "sha256": "1c984914aec944de19b64eff232421439629699f8138e3ddc29301175bc6d938"
+  }
+}

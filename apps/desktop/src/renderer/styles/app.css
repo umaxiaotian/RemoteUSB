@@ -274,6 +274,7 @@ main {
 }
 .sidebar .ant-menu {
   border-inline-end: 0 !important;
+  flex: 0 0 auto;
 }
 .sidebar .ant-menu-item {
   color: var(--text) !important;
@@ -309,6 +310,7 @@ main {
 }
 .secondary-menu {
   margin-top: auto;
+  flex: 0 0 auto;
 }
 .support {
   margin-top: 16px;
@@ -317,6 +319,9 @@ main {
 .sidebar .ant-menu-item {
   margin: 2px 0;
   width: 100%;
+  height: 42px;
+  line-height: 42px;
+  flex: 0 0 42px;
   padding-left: 12px !important;
 }
 .sidebar .ant-menu-item-selected:before {

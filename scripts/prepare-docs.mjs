@@ -11,8 +11,6 @@ const pages = new Map([
   ["README.ko.md", "ko/index.md"],
   ["README.zh-CN.md", "zh-CN/index.md"],
   ["docs/architecture.md", "reference/architecture.md"],
-  ["docs/usbip-backend.md", "reference/usbip-backend.md"],
-  ["docs/usb-server.md", "reference/usb-server.md"],
   ["docs/documentation.md", "reference/documentation.md"],
 ]);
 
