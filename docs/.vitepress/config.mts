@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 
 const repository = "https://github.com/umaxiaotian/RemoteUSB";
+
 const language = (
   label: string,
   lang: string,
@@ -39,20 +40,24 @@ const language = (
 export default defineConfig({
   title: "RemoteUSB",
   description: "USB/IP client & server for Windows — documentation",
-  base: "/RemoteUSB/",
+
+  base: "/",
+
   srcDir: ".vitepress/content",
   cleanUrls: false,
+
   head: [
-    ["link", { rel: "icon", type: "image/png", href: "/RemoteUSB/icon.png" }],
+    ["link", { rel: "icon", type: "image/png", href: "/icon.png" }],
     [
       "meta",
       {
         property: "og:image",
-        content: "https://umaxiaotian.github.io/RemoteUSB/social-preview.png",
+        content: "https://remoteusb.ounets.com/social-preview.png",
       },
     ],
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
   ],
+
   locales: {
     root: language("English", "en", "/", "Guide", "Download", "On this page"),
     ja: language("日本語", "ja", "/ja/", "ガイド", "ダウンロード", "目次"),
@@ -66,12 +71,16 @@ export default defineConfig({
       "本页目录",
     ),
   },
+
   themeConfig: {
     logo: "/icon.png",
+
     // References retain their source language; switch to each locale's guide.
     i18nRouting: false,
+
     socialLinks: [{ icon: "github", link: repository }],
     search: { provider: "local" },
+
     footer: {
       message: "Released under the MIT License.",
       copyright: "YUMA OBATA",
