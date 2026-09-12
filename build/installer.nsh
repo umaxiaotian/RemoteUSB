@@ -78,7 +78,6 @@ FunctionEnd
 !macroend
 
 !macro customUnInstall
-  DeleteRegKey SHCTX "Software\Classes\AppUserModelId\io.remoteusb.desktop"
   ${If} ${isUpdated}
     Goto usb_uninstall_done
   ${EndIf}
@@ -93,7 +92,9 @@ FunctionEnd
     SetRebootFlag true
   ${ElseIf} $0 != 0
     DetailPrint "$1"
-    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbServerRemoveError)"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbServerRemoveError)$\r$\n$1"
+    SetErrorLevel 1
+    Abort
   ${EndIf}
   DetailPrint "$(UsbClientRemove)"
   nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-driver.ps1"'
@@ -103,9 +104,12 @@ FunctionEnd
     SetRebootFlag true
   ${ElseIf} $0 != 0
     DetailPrint "$1"
-    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbClientRemoveError)"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbClientRemoveError)$\r$\n$1"
+    SetErrorLevel 1
+    Abort
   ${EndIf}
   IfRebootFlag 0 usb_uninstall_done
   MessageBox MB_OK|MB_ICONINFORMATION "$(UsbRemovalRestart)"
   usb_uninstall_done:
+  DeleteRegKey SHCTX "Software\Classes\AppUserModelId\io.remoteusb.desktop"
 !macroend
