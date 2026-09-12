@@ -39,7 +39,7 @@ pnpm install
 pnpm package
 ```
 
-生成的 NSIS 安装程序位于 `release/RemoteUSB-Setup-0.1.0.exe`。RemoteUSB 发布构建默认未签名。
+生成的 NSIS 安装程序位于 `release/RemoteUSB-Setup-0.1.2.exe`。RemoteUSB 发布构建默认未签名。
 
 安装包包含**未经修改的官方 USBip 0.9.8.0 x64 安装程序**。安装过程中选择安装 USBip 后，会先验证 SHA-256 和 Authenticode 签名，再打开官方安装界面。请按照管理员权限、组件选择和重启提示操作。静默安装 RemoteUSB 时不会启动 USBip 安装程序。
 
@@ -91,7 +91,7 @@ Windows CI 运行 lint、类型检查、测试、构建和 E2E。这些检查通
 
 [Release 工作流](.github/workflows/release.yml)支持两种方式：
 
-- **手动运行：** 在 Actions → Release → Run workflow 中选择待发布分支，输入与 `package.json` 一致的标签，例如 `v0.1.0`。验证成功后，在已测试的提交上创建标签并发布 Release。
+- **手动运行：** 在 Actions → Release → Run workflow 中选择待发布分支，输入与 `package.json` 一致的标签，例如 `v0.1.2`。验证成功后，在已测试的提交上创建标签并发布 Release。
 - **推送标签：** 推送版本匹配的标签，工作流会构建并发布对应提交。
 
 发布附件包括安装程序、SHA-256 校验列表、usbip-win2 源代码和许可证。版本不一致、已有标签指向其他提交或覆盖已有 Release 的操作会被拒绝。请在仓库中启用 GitHub Actions。只有发布任务拥有仓库写入权限。

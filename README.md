@@ -39,7 +39,7 @@ pnpm install
 pnpm package
 ```
 
-The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.0.exe`. RemoteUSB release builds are unsigned by default.
+The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.2.exe`. RemoteUSB release builds are unsigned by default.
 
 The installer bundles the **unmodified official USBip 0.9.8.0 x64 setup**. If selected during installation, RemoteUSB verifies its SHA-256 and Authenticode signature before opening the upstream setup. Follow its administrator permission, component selection and restart prompts. Silent RemoteUSB installations skip USBip setup.
 
@@ -91,7 +91,7 @@ Windows CI runs lint, type checking, tests, build and E2E. These checks do not e
 
 The [Release workflow](.github/workflows/release.yml) supports:
 
-- **Manual execution:** choose Actions → Release → Run workflow, select the branch to release and enter a tag matching `package.json`, such as `v0.1.0`. After successful validation, it creates the tag at the tested commit and publishes the release.
+- **Manual execution:** choose Actions → Release → Run workflow, select the branch to release and enter a tag matching `package.json`, such as `v0.1.2`. After successful validation, it creates the tag at the tested commit and publishes the release.
 - **Tag push:** push a matching version tag to build and publish that commit.
 
 Releases include the installer, SHA-256 checksums, usbip-win2 source and license. Version mismatches, existing tags pointing to another commit and overwriting an existing release are rejected. Enable GitHub Actions in the repository. Only the publishing job has repository write permission.
