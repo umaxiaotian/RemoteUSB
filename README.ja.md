@@ -43,7 +43,7 @@ pnpm install
 pnpm package
 ```
 
-NSISインストーラーを `release/RemoteUSB-Setup-0.1.3.exe` に生成します。RemoteUSBのリリースビルドは既定では未署名です。
+NSISインストーラーを `release/RemoteUSB-Setup-0.1.4.exe` に生成します。RemoteUSBのリリースビルドは既定では未署名です。
 
 **公式usbip-win2 0.9.8.0 x64セットアップとusbipd-win 5.3.0 x64 MSIを未改変で同梱**しています。インストーラーはSHA-256とAuthenticode署名を確認したうえで、client・署名済みドライバー・serverを公式セットアップから導入します。GitHubからのダウンロードは行いません。
 
@@ -95,7 +95,7 @@ Windows CIでlint・型チェック・テスト・ビルド・E2Eを実行しま
 
 [Releaseワークフロー](.github/workflows/release.yml)は次の両方に対応します。
 
-- **手動実行：** Actions → Release → Run workflowで対象ブランチを選び、`package.json` と一致するタグ（例：`v0.1.3`）を入力します。検証後、テストしたコミットにタグを作成してReleaseを公開します。
+- **手動実行：** Actions → Release → Run workflowで対象ブランチを選び、`package.json` と一致するタグ（例：`v0.1.4`）を入力します。検証後、テストしたコミットにタグを作成してReleaseを公開します。
 - **タグのpush：** バージョンが一致するタグをpushすると、そのコミットをビルドして公開します。
 
 インストーラー・SHA-256一覧・usbip-win2ソース・ライセンスを添付します。バージョン不一致・別コミットの既存タグ・既存Releaseの上書きは拒否します。リポジトリでActionsを有効にしてください。書き込み権限は公開ジョブだけに付与します。

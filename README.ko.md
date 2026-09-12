@@ -43,7 +43,7 @@ pnpm install
 pnpm package
 ```
 
-NSIS 설치 프로그램이 `release/RemoteUSB-Setup-0.1.3.exe`에 생성됩니다. RemoteUSB 릴리스 빌드는 기본적으로 서명되지 않습니다.
+NSIS 설치 프로그램이 `release/RemoteUSB-Setup-0.1.4.exe`에 생성됩니다. RemoteUSB 릴리스 빌드는 기본적으로 서명되지 않습니다.
 
 **공식 USBip 0.9.8.0 x64 설치 프로그램을 수정 없이 포함**합니다. 설치 중 USBip 설치를 선택하면 SHA-256과 Authenticode 서명을 검증한 후 공식 설치 화면을 엽니다. 관리자 권한, 구성 요소 선택 및 재시작 안내를 따르세요. 무인 설치에서는 USBip 설치 프로그램을 실행하지 않습니다.
 
@@ -95,7 +95,7 @@ Windows CI는 린트, 타입 검사, 테스트, 빌드 및 E2E를 실행합니�
 
 [Release 워크플로](.github/workflows/release.yml)는 두 가지 방법을 지원합니다.
 
-- **수동 실행:** Actions → Release → Run workflow에서 배포할 브랜치를 선택하고 `package.json`과 일치하는 태그(예: `v0.1.3`)를 입력합니다. 검증 성공 후 테스트한 커밋에 태그를 만들고 릴리스를 게시합니다.
+- **수동 실행:** Actions → Release → Run workflow에서 배포할 브랜치를 선택하고 `package.json`과 일치하는 태그(예: `v0.1.4`)를 입력합니다. 검증 성공 후 테스트한 커밋에 태그를 만들고 릴리스를 게시합니다.
 - **태그 푸시:** 버전이 일치하는 태그를 푸시하면 해당 커밋을 빌드하고 게시합니다.
 
 설치 프로그램, SHA-256 목록, usbip-win2 소스와 라이선스를 첨부합니다. 버전 불일치, 다른 커밋을 가리키는 기존 태그 및 기존 릴리스 덮어쓰기는 거부합니다. 저장소에서 GitHub Actions를 활성화하세요. 저장소 쓰기 권한은 게시 작업에만 부여됩니다.
