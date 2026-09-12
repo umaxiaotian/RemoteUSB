@@ -43,9 +43,9 @@ pnpm install
 pnpm package
 ```
 
-NSISインストーラーを `release/RemoteUSB-Setup-0.1.2.exe` に生成します。RemoteUSBのリリースビルドは既定では未署名です。
+NSISインストーラーを `release/RemoteUSB-Setup-0.1.3.exe` に生成します。RemoteUSBのリリースビルドは既定では未署名です。
 
-**公式USBip 0.9.8.0 x64セットアップを未改変で同梱**しています。インストール中に導入を選ぶと、SHA-256とAuthenticode署名を確認して公式セットアップを開きます。管理者権限・コンポーネント選択・再起動の案内に従ってください。サイレントインストールではUSBipセットアップを起動しません。
+**公式usbip-win2 0.9.8.0 x64セットアップとusbipd-win 5.3.0 x64 MSIを未改変で同梱**しています。インストーラーはSHA-256とAuthenticode署名を確認したうえで、client・署名済みドライバー・serverを公式セットアップから導入します。GitHubからのダウンロードは行いません。
 
 **USBipの導入時はUSBハブが再起動し、USB機器が一時的に停止する場合があります。USBストレージへの転送や通話を終えてから実行してください。** RemoteUSBはSecure Bootやテスト署名を変更しません。USBipは独立したアプリとして導入され、RemoteUSBのアンインストールでは削除されません。
 
@@ -67,14 +67,14 @@ pnpm dev:mock
 
 ## USB/IPの設定
 
-1. RemoteUSBのインストール時、または設定／アプリ情報の同梱ツールからUSBipセットアップを実行します。
-2. 実行ファイルパスは空欄で `Program Files/USBip/usbip.exe`、次に `PATH` を検索します。独自の導入先は絶対パスを指定し、DLLをCLIと同じ場所に保持してください。
+1. RemoteUSB-Setup.exeを実行すると、USB/IP client、署名済みclientドライバー、usbipd-win serverが公式セットアップ経由で導入されます。
+2. RemoteUSBは同梱backend、インストール済みのupstream配置、`PATH` の順で実行ファイルを検索します。開発や互換性のため、設定で独自の絶対パスも指定できます。
 3. USB/IPサーバーでデバイスを共有し、RemoteUSBにホスト名とポートを追加します。既定ポートは3240です。
 4. 接続テスト後にデバイス一覧を更新し、接続します。
 
 usbip-win2は**Windowsクライアント**です。旧cezanne版・`usbipd.exe`・`attacher.exe` は同梱しません。CLIのTCPポート指定範囲は1024–65535です。
 
-`pnpm vendor:fetch` で固定した配布物を再取得し、`pnpm vendor:verify` でハッシュを検証します。[同梱ガイド](vendor/usbip-win2/README.md)・[マニフェスト](vendor/usbip-win2/manifest.json)・[バックエンドの詳細](docs/usbip-backend.md)を参照してください。
+`pnpm vendor:check-update` で更新を確認し、`pnpm vendor:update` で明示的に更新します。`vendor-lock.json` を確認した後、`pnpm vendor:verify`、`pnpm test`、`pnpm package` を実行してください。ビルド時に最新版を暗黙取得することはありません。[同梱ガイド](vendor/usbip-win2/README.md)・[マニフェスト](vendor/usbip-win2/manifest.json)を参照してください。
 
 ## テストとパッケージ作成
 
@@ -95,7 +95,7 @@ Windows CIでlint・型チェック・テスト・ビルド・E2Eを実行しま
 
 [Releaseワークフロー](.github/workflows/release.yml)は次の両方に対応します。
 
-- **手動実行：** Actions → Release → Run workflowで対象ブランチを選び、`package.json` と一致するタグ（例：`v0.1.2`）を入力します。検証後、テストしたコミットにタグを作成してReleaseを公開します。
+- **手動実行：** Actions → Release → Run workflowで対象ブランチを選び、`package.json` と一致するタグ（例：`v0.1.3`）を入力します。検証後、テストしたコミットにタグを作成してReleaseを公開します。
 - **タグのpush：** バージョンが一致するタグをpushすると、そのコミットをビルドして公開します。
 
 インストーラー・SHA-256一覧・usbip-win2ソース・ライセンスを添付します。バージョン不一致・別コミットの既存タグ・既存Releaseの上書きは拒否します。リポジトリでActionsを有効にしてください。書き込み権限は公開ジョブだけに付与します。
@@ -137,6 +137,6 @@ RemoteUSB本体は[MIT](LICENSE)です。usbip-win2はBSD-2-Clauseで、著作�
 
 ## ローカルUSBの共有
 
-**USB共有**画面から、このPCのUSB機器を一覧表示し、[usbipd-win](https://github.com/dorssel/usbipd-win)で共有・共有解除できます。公式usbipd-win 5.3.0 MSIをvendor/usbipd-winに同梱しています。インストールウィザードのUSB機能選択で共有機能を選ぶか、USB共有画面から同梱ツールを開いて導入できます。クライアントとサーバーは順番に導入し、既定では両方を選択しています。不要な機能は選択を外せます。Program FilesまたはPATHから検出します。Bus ID・VID:PID・共有状態・接続中のクライアントを表示します。
+**USB共有**画面から、このPCのUSB機器を一覧表示し、[usbipd-win](https://github.com/dorssel/usbipd-win)で共有・共有解除できます。公式usbipd-win 5.3.0 MSIをvendor/usbipd-winに同梱しています。RemoteUSBのインストーラーがclientとserverを必須構成で順番に導入します。Program FilesまたはPATHから検出します。Bus ID・VID:PID・共有状態・接続中のクライアントを表示します。
 
 共有操作は中央の確認ダイアログで確認し、その操作だけWindows UACで管理者権限を要求します。共有はRemoteUSB終了後も継続し、解除時はリモートクライアントが切断される場合があります。信頼できるネットワークでusbipdサービスとファイアウォールを設定してください。デモモードではPCを変更せず操作を再現します。実機とUAC操作は手動検証が必要です。[実装メモ](docs/usb-server.md)も参照してください。
