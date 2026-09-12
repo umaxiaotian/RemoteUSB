@@ -23,3 +23,9 @@ BSD-2-Clause: full copyright, terms and disclaimer are in LICENSE.txt. Keep this
 source-0.9.8.0.zip is a convenience copy of the matching tag source; public development PFX/P12 keys are omitted, no program source is changed. Use your own signing credentials and fetch the submodules/dependencies specified by upstream to rebuild. Original URLs/hashes and the redistributed file hashes are in manifest.json. Run pnpm vendor:fetch to reproduce, pnpm vendor:verify to verify.
 
 署名済み公式リリースを利用し、RemoteUSB自身は証明書の導入、テスト署名、Secure Boot、ファイアウォールの変更を行いません。実機・OSとの互換性は対象環境で確認してください。
+
+## Minimal client setup
+
+RemoteUSB starts the official installer with `/COMPONENTS=main,client /TASKS=vcredist`. This selects the CLI, its DLLs, required client drivers and Visual C++ runtime, without the optional GUI, SDK, PDB symbols or desktop shortcut. The official wizard remains visible, so users can change the selection. Existing optional files from a previous full installation are not proactively removed. The installer and bundled license materials remain unmodified.
+
+RemoteUSBからはCLI・DLL・ドライバーと必要なVisual C++ランタイムを選択した状態で起動します。GUI・SDK・PDB・デスクトップショートカットは既定で外します。公式ウィザード上で選択は変更できます。過去のフルインストールで追加したファイルを自動削除する処理は行いません。

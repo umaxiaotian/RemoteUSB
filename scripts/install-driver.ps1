@@ -8,8 +8,9 @@ try {
     $signature = Get-AuthenticodeSignature -LiteralPath $installer
     if ($signature.Status -ne 'Valid') { throw "Windows could not verify the official USBip installer signature: $($signature.Status)" }
     if ($CheckOnly) { Write-Output 'Official USBip 0.9.8.0 installer hash and signature verified. Nothing installed.'; exit 0 }
-    # Keep upstream UI, license, component selection and reboot handling visible.
-    $child = Start-Process -FilePath $installer -Verb RunAs -WindowStyle Normal -Wait -PassThru
+    # Official minimal client components; retain the required VC++ runtime task.
+    # No GUI, SDK, PDB symbols or desktop shortcut by default. Keep upstream UI visible.
+    $child = Start-Process -FilePath $installer -ArgumentList @('/COMPONENTS=main,client', '/TASKS=vcredist') -Verb RunAs -WindowStyle Normal -Wait -PassThru
     if ($child.ExitCode -ne 0) { throw "USBip setup returned $($child.ExitCode). Setup may have been cancelled; see the upstream setup result." }
 } catch {
     if ($CheckOnly) { Write-Output $_.Exception.Message } else {
