@@ -23,8 +23,8 @@ LangString UsbServerInstallError 1033 "usbipd-win setup failed. RemoteUSB instal
 LangString UsbServerInstallError 1041 "usbipd-win の導入に失敗しました。RemoteUSB のインストールを続行できません。"
 LangString UsbClientInstallError 1033 "USBip client or driver setup failed. RemoteUSB installation cannot continue."
 LangString UsbClientInstallError 1041 "USBip クライアントまたはドライバーの導入に失敗しました。RemoteUSB のインストールを続行できません。"
-LangString UsbRemovePrompt 1033 "Also uninstall USBip (usbip-win2), its client drivers and the usbipd-win server?$\r$\n$\r$\nThis includes components installed before RemoteUSB. Other applications may use them. Select No to keep them."
-LangString UsbRemovePrompt 1041 "USBip (usbip-win2)、クライアントドライバー、usbipd-win サーバーも削除しますか？$\r$\n$\r$\nRemoteUSB より前に導入されたものも削除対象です。他のアプリが使用している場合があります。残す場合は「いいえ」を選択してください。"
+LangString UsbRemovePrompt 1033 "Also uninstall USBip (usbip-win2), its client drivers and the usbipd-win server?$\r$\n$\r$\nThis includes components installed before RemoteUSB. Active USB connections will be disconnected. Finish USB transfers first. Other applications may use these components. Select No to keep them."
+LangString UsbRemovePrompt 1041 "USBip (usbip-win2)、クライアントドライバー、usbipd-win サーバーも削除しますか？$\r$\n$\r$\nRemoteUSB より前に導入されたものも削除対象です。接続中の USB 機器は切断されます。先に USB 転送を終了してください。他のアプリが使用している場合があります。残す場合は「いいえ」を選択してください。"
 LangString UsbServerRemove 1033 "Uninstalling usbipd-win..."
 LangString UsbServerRemove 1041 "usbipd-win を削除しています..."
 LangString UsbClientRemove 1033 "Uninstalling USBip and its client drivers..."
@@ -33,6 +33,9 @@ LangString UsbServerRemoveError 1033 "usbipd-win could not be removed. You can r
 LangString UsbServerRemoveError 1041 "usbipd-win を削除できませんでした。Windows の「設定」>「アプリ」>「インストールされているアプリ」から再試行できます。"
 LangString UsbClientRemoveError 1033 "USBip or its client drivers could not be removed. You can retry from Windows Settings > Apps > Installed apps."
 LangString UsbClientRemoveError 1041 "USBip またはクライアントドライバーを削除できませんでした。Windows の「設定」>「アプリ」>「インストールされているアプリ」から再試行できます。"
+
+LangString UsbRemovalRestart 1033 "Restart Windows to finish removing the USB/IP components and drivers."
+LangString UsbRemovalRestart 1041 "USB/IP コンポーネントとドライバーの削除を完了するには、Windows を再起動してください。"
 
 !ifndef BUILD_UNINSTALLER
 !macro customPageAfterChangeDir
@@ -46,13 +49,7 @@ Function UsbComponentsPage
   ${If} $0 == error
     Abort
   ${EndIf}
-  ${NSD_CreateLabel} 0 0 100% 30u "$(UsbIncluded)"
-  Pop $0
-  ${NSD_CreateLabel} 0 40u 100% 20u "$(UsbAdmin)"
-  Pop $0
-  ${NSD_CreateLabel} 0 70u 100% 30u "$(UsbRestart)"
-  Pop $0
-  ${NSD_CreateLabel} 0 110u 100% 30u "$(UsbSharing)"
+  ${NSD_CreateLabel} 0 0 100% 140u "$(UsbIncluded)$\r$\n$\r$\n$(UsbAdmin)$\r$\n$\r$\n$(UsbRestart)$\r$\n$\r$\n$(UsbSharing)"
   Pop $0
   nsDialogs::Show
 FunctionEnd
@@ -92,15 +89,23 @@ FunctionEnd
   nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-server.ps1"'
   Pop $0
   Pop $1
-  ${If} $0 != 0
+  ${If} $0 == 3010
+    SetRebootFlag true
+  ${ElseIf} $0 != 0
+    DetailPrint "$1"
     MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbServerRemoveError)"
   ${EndIf}
   DetailPrint "$(UsbClientRemove)"
   nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-driver.ps1"'
   Pop $0
   Pop $1
-  ${If} $0 != 0
+  ${If} $0 == 3010
+    SetRebootFlag true
+  ${ElseIf} $0 != 0
+    DetailPrint "$1"
     MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbClientRemoveError)"
   ${EndIf}
+  IfRebootFlag 0 usb_uninstall_done
+  MessageBox MB_OK|MB_ICONINFORMATION "$(UsbRemovalRestart)"
   usb_uninstall_done:
 !macroend
