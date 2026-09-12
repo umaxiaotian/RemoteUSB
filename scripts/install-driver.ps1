@@ -10,6 +10,14 @@ try {
     $signature = Get-AuthenticodeSignature -LiteralPath $installer
     if ($signature.Status -ne 'Valid') { throw "Windows could not verify the official USBip installer signature: $($signature.Status)" }
     if ($CheckOnly) { Write-Output 'Official USBip 0.9.8.0 installer hash and signature verified. Nothing installed.'; exit 0 }
+    # Elevate the whole script so installation and HKLM registration use the same context.
+    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
+    if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+        $powershell = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+        $child = Start-Process -FilePath $powershell -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"' + $PSCommandPath + '"')) -Verb RunAs -WindowStyle Hidden -Wait -PassThru
+        exit $child.ExitCode
+    }
     $installRoot = Join-Path ${env:ProgramW6432} 'USBip'
     if (-not (Test-Path -LiteralPath $installRoot)) { $installRoot = Join-Path ${env:ProgramFiles} 'USBip' }
     $alreadyInstalled = Test-Path -LiteralPath (Join-Path $installRoot 'unins000.exe')
