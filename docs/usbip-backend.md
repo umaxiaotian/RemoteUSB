@@ -5,12 +5,12 @@
 
 ## 導入
 
-1. RemoteUSBのインストーラーでUSBipセットアップを選ぶか、Settings/Aboutの同梱USBツールから公式インストーラーを実行します。
+1. RemoteUSBのインストーラーでUSB/IP clientを選びます。公式usbip-win2セットアップと署名済みドライバを同梱しており、インストール時にGitHubへ接続しません。
 2. 管理者権限を承認し、上流セットアップのコンポーネント選択と再起動案内に従います。導入時はUSBハブが再起動するため、USB転送や通話を終えてください。
-3. RemoteUSBを起動してRefresh。既定のProgram Files/USBip/usbip.exe、次にPATHを検索します。独自の導入先はSettingsで絶対パスを指定します。DLLをCLIから分離しないでください。
-4. USB/IPサーバーを別途設定し、共有したデバイスを追加・接続します。win2にはサーバーusbipd.exeは含まれません。
+3. RemoteUSBを起動してRefresh。同梱 backend、インストール済みProgram Files/USBip/usbip.exe、PATHの順で検索します。独自の導入先はSettingsで絶対パスを指定します。
+4. 同梱のusbipd-win serverを選択してから、共有したデバイスを追加・接続します。
 
-BSD-2-Clause、対応ソース、未改変公式セットアップは [vendor](../vendor/usbip-win2/README.md) に同梱します。
+BSD-2-Clause、対応ソース、未改変公式セットアップは [vendor](../vendor/usbip-win2/README.md) に同梱します。取得元、asset、SHA-256は `vendor-lock.json` に固定します。
 RemoteUSBはSecure Bootやテスト署名を変更しません。USBipの削除はWindowsのインストール済みアプリから個別に行います。
 
 ## 検証したCLI契約

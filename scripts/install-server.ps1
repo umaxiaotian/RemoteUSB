@@ -1,8 +1,10 @@
 param([switch]$CheckOnly)
 $ErrorActionPreference = 'Stop'
 try {
-    $installer = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../vendor/usbipd-win/usbipd-win_5.3.0_x64.msi'))
-    if ((Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash -ne '1c984914aec944de19b64eff232421439629699f8138e3ddc29301175bc6d938') { throw 'usbipd-win installer hash mismatch.' }
+    $lock = Get-Content -LiteralPath (Join-Path $PSScriptRoot '../vendor-lock.json') -Raw | ConvertFrom-Json
+    $entry = $lock.'usbipd-win'
+    $installer = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot ('../vendor/usbipd-win/' + $entry.asset)))
+    if ((Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw 'usbipd-win installer hash mismatch.' }
     $signature = Get-AuthenticodeSignature -LiteralPath $installer
     if ($signature.Status -ne 'Valid') { throw "Windows could not verify the usbipd-win signature: $($signature.Status)" }
     if ($CheckOnly) { Write-Output 'usbipd-win 5.3.0 MSI hash and signature verified. Nothing installed.'; exit 0 }

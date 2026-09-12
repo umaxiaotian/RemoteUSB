@@ -40,9 +40,20 @@ export class UsbipWinBackend implements UsbBackend {
         );
       return configured;
     }
-    const paths = [process.env.ProgramW6432, process.env.ProgramFiles]
-      .filter((p): p is string => !!p)
-      .map((p) => join(p, "USBip"));
+    const processResourcesPath = (
+      process as NodeJS.Process & { resourcesPath?: string }
+    ).resourcesPath;
+    const bundled = [
+      process.env.REMOTEUSB_VENDOR_DIR,
+      processResourcesPath &&
+        join(processResourcesPath, "vendor", "usbip-win2"),
+      join(process.cwd(), "vendor", "usbip-win2"),
+    ].filter((p): p is string => !!p);
+    const paths = bundled.concat(
+      [process.env.ProgramW6432, process.env.ProgramFiles]
+        .filter((p): p is string => !!p)
+        .map((p) => join(p, "USBip")),
+    );
     paths.push(
       ...(process.env.PATH ?? "").split(";").filter((p) => isAbsolute(p)),
     );

@@ -8,7 +8,7 @@
 
 A USB/IP desktop client for Windows with a Windows 11-style interface, built with Electron, React, TypeScript and Ant Design.
 
-RemoteUSB is an MVP. Explore the interface without hardware in Demo Mode, or connect to shared USB devices using the **usbip-win2 0.9.8.0** backend. Real driver installation and USB hardware connections still require manual validation.
+RemoteUSB contains the required USB/IP runtime components. Explore the interface without hardware in Demo Mode, or connect to shared USB devices using the bundled **usbip-win2** client and **usbipd-win** server. Real driver installation and USB hardware connections still require manual validation.
 
 ## Features
 
@@ -31,7 +31,7 @@ Captured from the Electron application using the mock backend.
 
 - Windows 11 x64.
 - Development: Node.js 24 LTS and pnpm 10.32.1.
-- Real connections: installed usbip-win2 client, its DLLs and drivers, and a separately configured USB/IP server.
+- Real connections: the RemoteUSB installer includes the USB/IP client, server and signed upstream driver packages.
 - Demo Mode requires no driver, administrator permission or USB hardware.
 
 ## Installation
@@ -40,12 +40,13 @@ Build the Windows installer from source:
 
 ```powershell
 pnpm install
+pnpm vendor:verify
 pnpm package
 ```
 
 The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.2.exe`. RemoteUSB release builds are unsigned by default.
 
-The installer bundles the **unmodified official USBip 0.9.8.0 x64 setup**. If selected during installation, RemoteUSB verifies its SHA-256 and Authenticode signature before opening the upstream setup. Follow its administrator permission, component selection and restart prompts. Silent RemoteUSB installations skip USBip setup.
+The installer bundles the unmodified official usbip-win2 x64 setup and usbipd-win x64 MSI. The NSIS installer verifies the pinned vendor assets, then runs the upstream installers locally when the corresponding component is selected. No GitHub download is performed during installation.
 
 **USBip installation can briefly restart USB hubs and interrupt USB devices. Finish USB storage transfers and calls beforehand.** RemoteUSB does not change Secure Boot or test-signing settings. USBip is installed independently and is not removed when RemoteUSB is uninstalled.
 
@@ -67,14 +68,14 @@ Demo settings are stored in `demo.json`, and real settings in `settings.json`. T
 
 ## USB/IP setup
 
-1. Run the bundled USBip installer, available through Settings/About or during RemoteUSB installation.
-2. Leave the executable path empty to search `Program Files/USBip/usbip.exe`, then `PATH`. For a custom installation, select the absolute path in Settings. Keep the DLLs with the CLI.
+1. Install RemoteUSB-Setup.exe and select the USB/IP client and server components. The signed upstream driver packages are installed by their official installers.
+2. RemoteUSB uses its bundled backend first, then the installed upstream location. A custom `usbip.exe` path can still be selected in Settings for development or compatibility.
 3. Share a device on your USB/IP server and add its hostname and port in RemoteUSB; the default is 3240.
 4. Test the connection, refresh Devices and select Connect.
 
 usbip-win2 is a **Windows client**, not a server. The old cezanne client, `usbipd.exe` and `attacher.exe` are not bundled. The supported CLI accepts TCP ports 1024–65535.
 
-Run `pnpm vendor:fetch` to reproduce the pinned download and `pnpm vendor:verify` to verify bundled hashes. See the [bundled software guide](vendor/usbip-win2/README.md), [manifest](vendor/usbip-win2/manifest.json) and [backend details](docs/usbip-backend.md) (Japanese).
+Check for upstream updates with `pnpm vendor:check-update`, update explicitly with `pnpm vendor:update`, review `vendor-lock.json`, then run `pnpm vendor:verify`, `pnpm test` and `pnpm package`. Builds never resolve `latest` implicitly. See the [bundled software guide](vendor/usbip-win2/README.md), [manifest](vendor/usbip-win2/manifest.json) and [backend details](docs/usbip-backend.md) (Japanese).
 
 ## Tests and packaging
 

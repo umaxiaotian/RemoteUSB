@@ -13,7 +13,10 @@
     "docs:build": "node scripts/prepare-docs.mjs && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "postinstall": "node node_modules/electron/install.js",
-    "vendor:fetch": "node scripts/fetch-usbip.mjs && node scripts/fetch-usbipd.mjs",
+    "vendor:update": "node scripts/update-vendor.mjs",
+    "vendor:check-update": "node scripts/check-vendor-update.mjs",
+    "vendor:clean": "node scripts/clean-vendor.mjs",
+    "vendor:fetch": "pnpm vendor:update",
     "vendor:verify": "node scripts/verify-vendor.mjs",
     "dev": "electron-vite dev",
     "dev:mock": "cross-env REMOTEUSB_BACKEND=mock electron-vite dev",
@@ -22,7 +25,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "electron-vite build && playwright test",
-    "package": "node scripts/verify-vendor.mjs && electron-vite build && electron-builder --win nsis --x64",
+    "package": "pnpm vendor:verify && electron-vite build && electron-builder --win nsis --x64",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -75,6 +78,10 @@
       {
         "from": "scripts/install-server.ps1",
         "to": "driver-setup/install-server.ps1"
+      },
+      {
+        "from": "vendor-lock.json",
+        "to": "vendor-lock.json"
       },
       {
         "from": "vendor/usbip-win2",

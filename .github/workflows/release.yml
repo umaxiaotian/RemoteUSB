@@ -113,9 +113,10 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item THIRD_PARTY_NOTICES.md release/
-          Copy-Item vendor/usbip-win2/source-0.9.8.0.zip release/
+          Copy-Item vendor-lock.json release/
+          Copy-Item (Get-ChildItem vendor/usbip-win2/source-*.zip | Select-Object -First 1) release/
           Copy-Item vendor/usbip-win2/LICENSE.txt release/usbip-win2-LICENSE.txt
-          Copy-Item vendor/usbipd-win/source-5.3.0.zip release/usbipd-win-source-5.3.0.zip
+          Copy-Item (Get-ChildItem vendor/usbipd-win/source-*.zip | Select-Object -First 1) release/
           Copy-Item vendor/usbipd-win/COPYING.md release/usbipd-win-COPYING.md
           Copy-Item vendor/usbipd-win/DRIVER-SOURCES.md release/usbipd-win-DRIVER-SOURCES.md
           Copy-Item vendor/usbipd-win/WSL-SOURCES.md release/usbipd-win-WSL-SOURCES.md

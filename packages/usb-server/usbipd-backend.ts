@@ -43,9 +43,20 @@ export function parseUsbipdState(output: string): SharingState {
   };
 }
 function findExecutable() {
-  const directories = [process.env.ProgramW6432, process.env.ProgramFiles]
+  const processResourcesPath = (
+    process as NodeJS.Process & { resourcesPath?: string }
+  ).resourcesPath;
+  const directories = [
+    process.env.REMOTEUSB_VENDOR_DIR,
+    processResourcesPath && join(processResourcesPath, "vendor", "usbipd-win"),
+    join(process.cwd(), "vendor", "usbipd-win"),
+  ]
     .filter((p): p is string => !!p)
-    .map((p) => join(p, "usbipd-win"));
+    .concat(
+      [process.env.ProgramW6432, process.env.ProgramFiles]
+        .filter((p): p is string => !!p)
+        .map((p) => join(p, "usbipd-win")),
+    );
   directories.push(
     ...(process.env.PATH ?? "").split(";").filter((p) => isAbsolute(p)),
   );

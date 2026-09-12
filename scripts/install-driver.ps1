@@ -3,8 +3,10 @@ param([switch]$CheckOnly)
 $ErrorActionPreference = 'Stop'
 $vendor = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../vendor/usbip-win2'))
 try {
-    $installer = Join-Path $vendor 'USBip-0.9.8.0-x64.exe'
-    if ((Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash -ne '81f426741f7ee2ed991febe24a22daca8400b6ae2f171054e3fb404897e15d39') { throw 'USBip installer hash mismatch.' }
+    $lock = Get-Content -LiteralPath (Join-Path $PSScriptRoot '../vendor-lock.json') -Raw | ConvertFrom-Json
+    $entry = $lock.'usbip-win2'
+    $installer = Join-Path $vendor $entry.asset
+    if ((Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.sha256) { throw 'USBip installer hash mismatch.' }
     $signature = Get-AuthenticodeSignature -LiteralPath $installer
     if ($signature.Status -ne 'Valid') { throw "Windows could not verify the official USBip installer signature: $($signature.Status)" }
     if ($CheckOnly) { Write-Output 'Official USBip 0.9.8.0 installer hash and signature verified. Nothing installed.'; exit 0 }
