@@ -45,15 +45,7 @@ FunctionEnd
   WriteRegStr SHCTX "Software\Classes\AppUserModelId\io.remoteusb.desktop" "DisplayName" "RemoteUSB"
   WriteRegStr SHCTX "Software\Classes\AppUserModelId\io.remoteusb.desktop" "IconUri" "$INSTDIR\resources\branding\icon.png"
   IfSilent usb_setup_done
-  ${If} $InstallUsbClient == ${BST_CHECKED}
-    DetailPrint "Running USBip client setup..."
-    nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\install-driver.ps1"'
-    Pop $0
-    Pop $1
-    ${If} $0 != 0
-      MessageBox MB_OK|MB_ICONINFORMATION "USBip client setup did not complete. RemoteUSB is installed; retry from the bundled tools folder.$\r$\nクライアントの導入が完了しませんでした。同梱ツールから再実行できます。"
-    ${EndIf}
-  ${EndIf}
+  ; Run the server first: USBip client setup may restart Windows.
   ${If} $InstallUsbServer == ${BST_CHECKED}
     DetailPrint "Running usbipd-win server setup..."
     nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\install-server.ps1"'
@@ -61,6 +53,15 @@ FunctionEnd
     Pop $1
     ${If} $0 != 0
       MessageBox MB_OK|MB_ICONINFORMATION "usbipd-win setup did not complete. RemoteUSB is installed; retry from the bundled server tools folder.$\r$\n共有機能の導入が完了しませんでした。同梱ツールから再実行できます。"
+    ${EndIf}
+  ${EndIf}
+  ${If} $InstallUsbClient == ${BST_CHECKED}
+    DetailPrint "Running USBip client setup..."
+    nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\install-driver.ps1"'
+    Pop $0
+    Pop $1
+    ${If} $0 != 0
+      MessageBox MB_OK|MB_ICONINFORMATION "USBip client setup did not complete. RemoteUSB is installed; retry from the bundled tools folder.$\r$\nクライアントの導入が完了しませんでした。同梱ツールから再実行できます。"
     ${EndIf}
   ${EndIf}
   usb_setup_done:
