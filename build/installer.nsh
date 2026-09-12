@@ -84,18 +84,7 @@ FunctionEnd
   IfSilent usb_uninstall_done
   MessageBox MB_YESNO|MB_DEFBUTTON2|MB_ICONQUESTION "$(UsbRemovePrompt)" IDNO usb_uninstall_done IDYES usb_remove_components
   usb_remove_components:
-  DetailPrint "$(UsbServerRemove)"
-  nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-server.ps1"'
-  Pop $0
-  Pop $1
-  ${If} $0 == 3010
-    SetRebootFlag true
-  ${ElseIf} $0 != 0
-    DetailPrint "$1"
-    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbServerRemoveError)$\r$\n$1"
-    SetErrorLevel 1
-    Abort
-  ${EndIf}
+  ; Drain the local client before stopping a server it may be connected to.
   DetailPrint "$(UsbClientRemove)"
   nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-driver.ps1"'
   Pop $0
@@ -105,6 +94,18 @@ FunctionEnd
   ${ElseIf} $0 != 0
     DetailPrint "$1"
     MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbClientRemoveError)$\r$\n$1"
+    SetErrorLevel 1
+    Abort
+  ${EndIf}
+  DetailPrint "$(UsbServerRemove)"
+  nsExec::ExecToStack '"$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "$INSTDIR\resources\driver-setup\uninstall-server.ps1"'
+  Pop $0
+  Pop $1
+  ${If} $0 == 3010
+    SetRebootFlag true
+  ${ElseIf} $0 != 0
+    DetailPrint "$1"
+    MessageBox MB_OK|MB_ICONEXCLAMATION "$(UsbServerRemoveError)$\r$\n$1"
     SetErrorLevel 1
     Abort
   ${EndIf}

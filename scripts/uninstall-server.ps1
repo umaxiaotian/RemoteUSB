@@ -65,11 +65,11 @@ try {
                 $null = $prepare.Handle
                 if (-not $prepare.WaitForExit(30000)) {
                     $prepare.Kill()
-                    if (-not $prepare.WaitForExit(10000)) { throw "usbipd $operation could not be stopped. Restart Windows and retry removal." }
-                    Write-RemovalMessage "usbipd $operation timed out; continuing with the official uninstaller."
+                    if (-not $prepare.WaitForExit(10000)) { throw "usbipd $operation could not be stopped. Server removal was cancelled; collect diagnostics before restarting Windows." }
+                    throw "usbipd $operation timed out. Server removal was cancelled because device restoration did not finish."
                 }
                 $prepare.Refresh()
-                if ($prepare.ExitCode -ne 0) { Write-RemovalMessage "usbipd $operation returned $($prepare.ExitCode); continuing with the official uninstaller." }
+                if ($prepare.ExitCode -ne 0) { throw "usbipd $operation returned $($prepare.ExitCode). Server removal was cancelled. Repair usbipd-win before retrying." }
             }
         }
         $log = Join-Path $env:TEMP ('RemoteUSB-usbipd-uninstall-' + [Guid]::NewGuid() + '.log')
@@ -78,7 +78,7 @@ try {
         $null = $child.Handle
         if (-not $child.WaitForExit(300000)) {
             # Do not kill Windows Installer mid-transaction.
-            throw "usbipd-win uninstall has not finished after 5 minutes (PID $($child.Id)). Restart Windows before retrying. Log: $log"
+            throw "usbipd-win uninstall has not finished after 5 minutes (PID $($child.Id)). Windows Installer may still be running; do not start another removal or restart Windows while it is active. Collect this log for diagnosis: $log"
         }
         $child.Refresh()
         if ($child.ExitCode -notin @(0, 1605, 3010)) { throw "usbipd-win uninstall returned $($child.ExitCode)." }
