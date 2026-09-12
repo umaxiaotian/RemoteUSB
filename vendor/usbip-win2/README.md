@@ -2,13 +2,13 @@
 
 Upstream: https://github.com/vadimgrn/usbip-win2/releases/tag/v.0.9.8.0
 
-The original x64 USBip installer is included unmodified. It contains the client CLI, its dependent libraries, and the USBip UDE/filter driver setup. RemoteUSB launches the upstream installer interactively only when selected. No driver installation is performed during development or build verification.
+The original x64 USBip installer is included unmodified. It contains the client CLI, its dependent libraries, and the USBip UDE/filter driver setup. RemoteUSB runs it during installation with the upstream `main,client` components and VC++ runtime fixed. No driver installation is performed during development or build verification.
 
 The upstream project describes its released drivers as WHLK certified or attestation signed. The installer Authenticode signature and GitHub asset SHA-256 were verified at download. The executable signature is not itself a kernel-driver compatibility test.
 
 ## Installation / インストール
 
-Choose USBip setup in the RemoteUSB installer, or run USBip-0.9.8.0-x64.exe in this directory. Administrator permission is required. Upstream setup may briefly restart USB hubs and interrupt attached USB devices; finish USB storage transfers/calls beforehand. Follow its component, license and reboot screens.
+RemoteUSB runs USBip-0.9.8.0-x64.exe during installation with the required client and driver components. Administrator permission is required. Setup may briefly restart USB hubs and interrupt attached USB devices; finish USB storage transfers/calls beforehand.
 
 RemoteUSB finds the installed CLI in Program Files/USBip/usbip.exe, then PATH. For a custom installation directory, select the absolute usbip.exe path in Settings. The CLI's DLLs must stay with it. Restart/refresh RemoteUSB after installation.
 
@@ -26,6 +26,6 @@ source-0.9.8.0.zip is a convenience copy of the matching tag source; public deve
 
 ## Minimal client setup
 
-RemoteUSB starts the official installer with `/COMPONENTS=main,client /TASKS=vcredist`. This selects the CLI, its DLLs, required client drivers and Visual C++ runtime, without the optional GUI, SDK, PDB symbols or desktop shortcut. The official wizard remains visible, so users can change the selection. Existing optional files from a previous full installation are not proactively removed. The installer and bundled license materials remain unmodified.
+RemoteUSB starts the official installer with `/VERYSILENT /COMPONENTS=main,client /TASKS=vcredist`. This selects the CLI, its DLLs, required client drivers and Visual C++ runtime, without the optional GUI, SDK, PDB symbols or desktop shortcut. The upstream installer remains unmodified and existing optional files from a previous full installation are not proactively removed.
 
-RemoteUSBからはCLI・DLL・ドライバーと必要なVisual C++ランタイムを選択した状態で起動します。GUI・SDK・PDB・デスクトップショートカットは既定で外します。公式ウィザード上で選択は変更できます。過去のフルインストールで追加したファイルを自動削除する処理は行いません。
+RemoteUSBからは `/VERYSILENT /COMPONENTS=main,client /TASKS=vcredist` で起動し、CLI・DLL・ドライバーと必要なVisual C++ランタイムを導入します。GUI・SDK・PDB・デスクトップショートカットは導入しません。過去のフルインストールで追加したファイルを自動削除する処理は行いません。

@@ -8,9 +8,10 @@ try {
     $signature = Get-AuthenticodeSignature -LiteralPath $installer
     if ($signature.Status -ne 'Valid') { throw "Windows could not verify the usbipd-win signature: $($signature.Status)" }
     if ($CheckOnly) { Write-Output 'usbipd-win 5.3.0 MSI hash and signature verified. Nothing installed.'; exit 0 }
-    # Keep the official MSI wizard visible, including maintenance/upgrade and UAC prompts.
+    # Install the complete official server MSI without leaving optional features
+    # to a user-driven wizard selection.
     $msiexec = Join-Path $env:SystemRoot 'System32/msiexec.exe'
-    $child = Start-Process -FilePath $msiexec -ArgumentList @('/i', ('"' + $installer + '"'), '/norestart') -Verb RunAs -WindowStyle Normal -Wait -PassThru
+    $child = Start-Process -FilePath $msiexec -ArgumentList @('/i', ('"' + $installer + '"'), '/qn', '/norestart') -Verb RunAs -WindowStyle Hidden -Wait -PassThru
     if ($child.ExitCode -eq 3010) {
         Add-Type -AssemblyName System.Windows.Forms
         [Windows.Forms.MessageBox]::Show('usbipd-win installed. Restart Windows to finish setup.', 'RemoteUSB') | Out-Null

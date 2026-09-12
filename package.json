@@ -72,7 +72,7 @@
         "from": "vendor/usbipd-win",
         "to": "vendor/usbipd-win",
         "filter": [
-          "**/*"
+          "*.msi"
         ]
       },
       {
@@ -87,9 +87,7 @@
         "from": "vendor/usbip-win2",
         "to": "vendor/usbip-win2",
         "filter": [
-          "**/*",
-          "!*.pfx",
-          "!*.p12"
+          "*.exe"
         ]
       },
       {
