@@ -44,7 +44,7 @@ pnpm vendor:verify
 pnpm package
 ```
 
-The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.3.exe`. RemoteUSB release builds are unsigned by default.
+The NSIS installer is generated at `release/RemoteUSB-Setup-0.1.4.exe`. RemoteUSB release builds are unsigned by default.
 
 The installer bundles the unmodified official usbip-win2 x64 setup and usbipd-win x64 MSI. The NSIS installer verifies the pinned vendor assets, then runs both upstream installers locally. The client installer uses the upstream `main,client` components and VC++ runtime, including the signed client driver package. No GitHub download is performed during installation.
 
@@ -96,7 +96,7 @@ Windows CI runs lint, type checking, tests, build and E2E. These checks do not e
 
 The [Release workflow](.github/workflows/release.yml) supports:
 
-- **Manual execution:** choose Actions → Release → Run workflow, select the branch to release and enter a tag matching `package.json`, such as `v0.1.3`. After successful validation, it creates the tag at the tested commit and publishes the release.
+- **Manual execution:** choose Actions → Release → Run workflow, select the branch to release and enter a tag matching `package.json`, such as `v0.1.4`. After successful validation, it creates the tag at the tested commit and publishes the release.
 - **Tag push:** push a matching version tag to build and publish that commit.
 
 Releases include the installer, SHA-256 checksums, usbip-win2 source and license. Version mismatches, existing tags pointing to another commit and overwriting an existing release are rejected. Enable GitHub Actions in the repository. Only the publishing job has repository write permission.
