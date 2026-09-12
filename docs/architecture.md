@@ -1,21 +1,63 @@
 # Architecture
 
-```text
-React renderer → sandboxed preload → validated IPC → UsbService
-                                                      ├ Store / Logger
-                                                      └ UsbBackend
-                                                         ├ MockUsbBackend
-                                                         └ UsbipWinBackend → execFile → usbip.exe / VHCI
+RemoteUSB keeps the renderer separate from Windows process, file and driver operations. The renderer can request typed operations, but only the main process can invoke a backend or access the operating system.
+
+```mermaid
+flowchart LR
+    Renderer[React renderer] --> Preload[Sandboxed preload]
+    Preload --> IPC[Validated typed IPC]
+    IPC --> Main[Electron main process]
+    Main --> Service[USB service]
+    Main --> Store[Settings and history store]
+    Main --> Logger[Redacted rotating logger]
+    Service --> Backend{USB backend}
+    Backend --> Mock[Mock backend]
+    Backend --> Client[USB/IP client]
+    Backend --> Server[USB/IP server]
+    Client --> Windows[Windows USB stack]
+    Server --> Windows
 ```
 
-`packages/core` はZodによるモデル・設定・永続化スキーマとエラー翻訳、`packages/shared` はIPC契約を持ちます。`packages/usb-backend` はReact/Electronに依存しないアダプターです。packagesは本MVPではソースの責務分割であり、個別の公開npmパッケージではありません。
+## Request boundary
 
-mainだけがプロセス・ファイル・OS機能にアクセスします。preloadはsandboxで動くよう依存をバンドルし、リクエストとレスポンスを双方検証します。mainは送信元webContents、トップフレーム、URLも確認します。任意のIPC名・URL・プロセス実行APIは公開しません。
+```mermaid
+sequenceDiagram
+    participant UI as React renderer
+    participant Bridge as Preload bridge
+    participant Main as Main process
+    participant Service as USB service
+    participant OS as Windows / USB/IP
 
-デバイス操作にはID単位のロックを設けます。refreshは多重実行をまとめ、途中のConnecting/Disconnectingを上書きしません。接続済みサーバーの編集・削除・無効化は切断後に行います。手動切断では再接続ポリシーをpausedにして、ユーザーの意図に反する再接続を防ぎます。再接続間隔は指数増加し最大5分です。
+    UI->>Bridge: Typed request
+    Bridge->>Main: Context-isolated IPC
+    Main->>Main: Validate sender and request
+    Main->>Service: Execute operation
+    Service->>OS: Validated process or file operation
+    OS-->>Service: Result
+    Service-->>Main: Snapshot or typed error
+    Main-->>Bridge: Validated response
+    Bridge-->>UI: Render state
+```
 
-保存はスキーマ検証→一時ファイル→renameで行います。不正な既存データは `.invalid-<timestamp>` に退避します。将来のスキーマ移行はversionを増やして明示的に実装します。ログは最大2MBでローテーションし、資格情報らしき値をマスクします。
+The main process validates request and response schemas, checks the IPC sender and never exposes arbitrary shell commands. Backend processes use fixed argument arrays, `execFile`, `shell: false`, timeouts and output limits.
 
-## 追加アダプター
+## State and persistence
 
-`UsbBackend` を実装し、mainの組み立て箇所で差し替えます。UIのCLI解析・子プロセス呼び出しは不要です。実機固有の接続同一性やPnP照合は新しいアダプター内に閉じ込めます。
+```mermaid
+stateDiagram-v2
+    [*] --> Available
+    Available --> Connecting: connect
+    Connecting --> Connected: backend success
+    Connecting --> Error: backend failure
+    Connected --> Disconnecting: disconnect
+    Disconnecting --> Available: backend success
+    Disconnecting --> Error: backend failure
+    Error --> Connecting: retry
+    Connected --> Reconnecting: connection lost
+    Reconnecting --> Connected: retry success
+    Reconnecting --> Error: retry failure
+```
+
+Device operations are serialized per device. Refresh operations are coalesced and do not overwrite an operation already in progress. Settings are schema-validated, written to a temporary file and atomically renamed. Invalid existing data is preserved with an `.invalid-<timestamp>` suffix.
+
+The mock backend uses the same typed boundary and service flow, so Demo Mode does not need USB/IP executables or drivers.

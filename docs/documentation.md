@@ -20,10 +20,10 @@ Open the URL printed by VitePress, including the `/RemoteUSB/` path.
 
 ## Editing
 
-Edit the four root README files and the technical Markdown files in `docs/`.
+Edit the four root README files and the public technical Markdown files in `docs/`.
 `scripts/prepare-docs.mjs` generates the site content, adjusts links and copies branding and screenshots before development or build. Restart `docs:dev` after editing the source documents to regenerate pages.
 
-Do not edit or commit `docs/.vitepress/content/`, `cache/` or `dist/`. Configuration lives in `docs/.vitepress/config.mts`. The four guides use their existing translations; technical references retain their original language, indicated in the sidebar.
+Do not edit or commit `docs/.vitepress/content/`, `cache/` or `dist/`. Configuration lives in `docs/.vitepress/config.mts`. The public technical references are limited to Architecture and documentation-site maintenance; implementation-specific USB/IP backend notes remain repository-internal.
 
 ## GitHub Pages setup
 
