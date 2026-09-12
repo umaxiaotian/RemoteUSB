@@ -8,25 +8,6 @@ export class UsbBackendError extends Error {
     super(message);
   }
 }
-export const errorMessages: Record<UsbBackendErrorCode, string> = {
-  BACKEND_NOT_FOUND:
-    "USB support requires setup. Choose the USB client executable in Settings.",
-  DRIVER_NOT_INSTALLED:
-    "The virtual USB driver is not installed. Open the setup guide.",
-  SERVER_UNREACHABLE:
-    "This computer is not responding. Check its address and network connection.",
-  DEVICE_NOT_FOUND: "This device is no longer shared. Refresh the device list.",
-  DEVICE_BUSY:
-    "This device may be in use by another PC. Try again when it is available.",
-  ATTACH_FAILED:
-    "Could not connect this device. It may be in use or the server may not be responding.",
-  DETACH_FAILED:
-    "Could not disconnect this device. Refresh its status and try again.",
-  PERMISSION_DENIED: "Windows denied access. Check the USB driver permissions.",
-  TIMEOUT: "The operation took too long. Check the server and try again.",
-  UNKNOWN:
-    "The operation could not be completed. Open Details for more information.",
-};
 /** 診断情報はDetails専用とし、通常の通知ではコードだけを使用する。 */
 export function mapError(
   error: unknown,

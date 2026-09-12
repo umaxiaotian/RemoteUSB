@@ -59,13 +59,10 @@ pre {
 .sidebar .ant-layout-sider-children {
   display: flex;
   flex-direction: column;
-  padding: 24px 10px 16px;
 }
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 10px 28px;
 }
 .sidebar-brand svg {
   color: var(--accent);
@@ -74,14 +71,9 @@ pre {
 .sidebar-brand .ant-typography-secondary {
   font-size: 11px;
 }
-.sidebar .ant-menu {
-  border-inline-end: 0;
-}
 .support {
-  margin-top: auto;
   display: flex;
   gap: 10px;
-  padding: 20px 10px 0;
   border-top: 1px solid var(--border);
   font-size: 12px;
 }
@@ -101,7 +93,6 @@ main {
 .content {
   max-width: 1240px;
   margin: auto;
-  padding: 32px 34px 48px;
 }
 .page-header {
   margin-bottom: 24px;
@@ -141,18 +132,8 @@ main {
 .device-card {
   height: 100%;
 }
-.device-card .ant-card-body {
-  padding: 18px;
-}
 .device-icon {
-  color: var(--accent);
   flex-shrink: 0;
-}
-.device-card .ant-typography-secondary {
-  font-size: 11px;
-}
-.device-status {
-  margin: 22px 0 12px;
 }
 .device-card .ant-collapse {
   margin: 0 -12px 12px;
@@ -214,26 +195,14 @@ main {
 .ant-layout-sider-collapsed .support {
   display: none;
 }
-.ant-layout-sider-collapsed .sidebar-brand {
-  padding-left: 8px;
-}
 @media (max-width: 1000px) {
-  .content {
-    padding: 26px 22px;
-  }
   .device-grid {
     gap: 10px;
   }
 }
 @media (max-width: 700px) {
-  .content {
-    padding: 20px 16px;
-  }
   .device-grid {
     grid-template-columns: 1fr;
-  }
-  .sidebar .ant-layout-sider-children {
-    padding: 20px 4px;
   }
   .server-host {
     width: 100%;

@@ -137,8 +137,11 @@
       "uninstallerIcon": "build/icon.ico",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "license": "build/installer-eula.txt",
-      "artifactName": "RemoteUSB-Setup-${version}.${ext}"
+      "artifactName": "RemoteUSB-Setup-${version}.${ext}",
+      "installerLanguages": [
+        "en_US",
+        "ja_JP"
+      ]
     }
   }
 }
