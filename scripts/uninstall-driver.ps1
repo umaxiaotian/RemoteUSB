@@ -22,12 +22,42 @@ try {
         $entry = Get-ItemProperty -Path $path -Name 'UsbipWin2Uninstaller' -ErrorAction SilentlyContinue
         if ($entry -and (Test-Path -LiteralPath $entry.UsbipWin2Uninstaller)) { $entry.UsbipWin2Uninstaller }
     ) | Select-Object -Unique
+    $restartRequired = $false
     foreach ($uninstaller in $uninstallers) {
         if (-not (Test-Path -LiteralPath $uninstaller)) { throw "USBip uninstaller is missing: $uninstaller" }
+        $installDirectory = Split-Path -Parent $uninstaller
+        # Stop only the upstream client processes from this installation. In
+        # particular, wusbip can automatically reconnect devices after detach.
+        $clientPaths = @((Join-Path $installDirectory 'usbip.exe'), (Join-Path $installDirectory 'wusbip.exe'))
+        Get-Process -Name usbip,wusbip -ErrorAction SilentlyContinue | Where-Object {
+            $_.Path -in $clientPaths
+        } | ForEach-Object {
+            Stop-Process -Id $_.Id -Force -ErrorAction Stop
+            if (-not $_.WaitForExit(10000)) { throw 'USBip process did not stop.' }
+        }
+        $usbip = Join-Path $installDirectory 'usbip.exe'
+        if (Test-Path -LiteralPath $usbip) {
+            $detach = Start-Process -FilePath $usbip -ArgumentList @('detach', '--all') -WindowStyle Hidden -PassThru
+            $null = $detach.Handle
+            if (-not $detach.WaitForExit(30000)) {
+                $detach.Kill()
+                throw 'USBip detach timed out. Component removal was not started.'
+            }
+            $detach.Refresh()
+            # A missing/already removed virtual controller can make detach fail.
+            # Still let the official uninstaller repair this partial state.
+            if ($detach.ExitCode -ne 0) { Write-Output "USBip detach returned $($detach.ExitCode); continuing with the official uninstaller." }
+        }
         $child = Start-Process -FilePath $uninstaller -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART') -WindowStyle Hidden -Wait -PassThru
-        if ($child.ExitCode -ne 0) { throw "USBip uninstall returned $($child.ExitCode)." }
+        if ($child.ExitCode -notin @(0, 3010)) { throw "USBip uninstall returned $($child.ExitCode)." }
+        # The bundled upstream UninstallNeedRestart always returns true.
+        $restartRequired = $true
+    }
+    if (@($clients | Where-Object { Test-Path -LiteralPath $_.PSPath }).Count -gt 0) {
+        throw 'USBip is still registered after its uninstaller finished.'
     }
     Remove-ItemProperty -Path $path -Name 'UsbipWin2Uninstaller' -ErrorAction SilentlyContinue
+    if ($restartRequired) { exit 3010 }
 } catch {
     Write-Output $_.Exception.Message
     exit 1
