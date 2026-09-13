@@ -40,7 +40,35 @@ try {
     }
     $msiexec = Join-Path $env:SystemRoot 'System32\msiexec.exe'
     $restartRequired = $false
-    # Disconnect active sessions before asking the CLI or MSI to remove devices.
+    $usbipdPaths = @(
+        foreach ($server in $servers) {
+            if ($server.PSChildName -notmatch '^\{[0-9A-Fa-f-]{36}\}$') { continue }
+            $directories = @(
+                if ($server.InstallLocation) { $server.InstallLocation }
+                Join-Path $env:ProgramFiles 'usbipd-win'
+            )
+            foreach ($directory in $directories) {
+                $candidate = Join-Path $directory 'usbipd.exe'
+                if (Test-Path -LiteralPath $candidate) { $candidate }
+            }
+        }
+    ) | Select-Object -Unique
+    if (@($servers | Where-Object { $_.PSChildName -match '^\{[0-9A-Fa-f-]{36}\}$' }).Count -gt 0 -and $usbipdPaths.Count -eq 0) {
+        throw 'usbipd.exe is missing while the usbipd-win server is registered. Server removal was cancelled because device sharing could not be stopped. Repair usbipd-win before retrying.'
+    }
+    # Release every shared device while usbipd is still running.
+    foreach ($usbipd in $usbipdPaths) {
+        $unbind = Start-Process -FilePath $usbipd -ArgumentList @('unbind', '--all') -WindowStyle Hidden -PassThru
+        $null = $unbind.Handle
+        if (-not $unbind.WaitForExit(30000)) {
+            $unbind.Kill()
+            if (-not $unbind.WaitForExit(10000)) { throw 'usbipd unbind could not be stopped. Server removal was cancelled; collect diagnostics before restarting Windows.' }
+            throw 'usbipd unbind timed out. Server removal was cancelled because device sharing was not fully stopped.'
+        }
+        $unbind.Refresh()
+        if ($unbind.ExitCode -ne 0) { throw "usbipd unbind returned $($unbind.ExitCode). Server removal was cancelled. Repair usbipd-win before retrying." }
+    }
+    # Stop the daemon only after all shared devices have been released.
     $service = Get-Service -Name usbipd -ErrorAction SilentlyContinue
     if ($service -and $service.Status -ne 'Stopped') {
         Write-RemovalMessage 'Stopping usbipd service...'
@@ -52,25 +80,6 @@ try {
             # This may be an auxiliary entry removed by the official MSI.
             Write-RemovalMessage "Deferring non-MSI registration check: $($server.PSChildName)"
             continue
-        }
-        $directories = @(
-            if ($server.InstallLocation) { $server.InstallLocation }
-            Join-Path $env:ProgramFiles 'usbipd-win'
-        )
-        $usbipd = $directories | ForEach-Object { Join-Path $_ 'usbipd.exe' } | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-        # Restore shared/forced-bound devices before removing the server drivers.
-        if ($usbipd) {
-            foreach ($operation in @('unbind')) {
-                $prepare = Start-Process -FilePath $usbipd -ArgumentList @($operation, '--all') -WindowStyle Hidden -PassThru
-                $null = $prepare.Handle
-                if (-not $prepare.WaitForExit(30000)) {
-                    $prepare.Kill()
-                    if (-not $prepare.WaitForExit(10000)) { throw "usbipd $operation could not be stopped. Server removal was cancelled; collect diagnostics before restarting Windows." }
-                    throw "usbipd $operation timed out. Server removal was cancelled because device restoration did not finish."
-                }
-                $prepare.Refresh()
-                if ($prepare.ExitCode -ne 0) { throw "usbipd $operation returned $($prepare.ExitCode). Server removal was cancelled. Repair usbipd-win before retrying." }
-            }
         }
         $log = Join-Path $env:TEMP ('RemoteUSB-usbipd-uninstall-' + [Guid]::NewGuid() + '.log')
         Write-RemovalMessage "Removing usbipd-win. Log: $log"

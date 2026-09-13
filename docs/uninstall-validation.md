@@ -4,7 +4,7 @@ Run these checks in a disposable Windows VM with the packaged installer. The scr
 
 | Scenario | Expected result |
 | --- | --- |
-| Share a device and attach it from another host, then remove all components | Local USBip detach/removal finishes before usbipd stops and unbinds; official uninstallers complete or report a bounded failure. Verify Windows actually completes the subsequent restart. |
+| Share a device and attach it from another host, then remove all components | Local USBip detach/removal finishes, all usbipd shares are unbound while the daemon is running, then usbipd stops before the official uninstallers run. Verify Windows actually completes the subsequent restart. |
 | Attach a remote device with USBip, then remove all components | Client reconnect processes stop; detach precedes driver removal; restart notice appears. |
 | Make detach/unbind exceed 30 seconds | The CLI is terminated and its exit confirmed; removal fails without launching that component's official uninstaller. RemoteUSB and retry scripts remain. For client failure, the server is not stopped and the upstream shutdown task remains installed. |
 | Make an official uninstaller exceed five minutes | Failure displays a log path and explains that removal may still be running; it must not instruct an immediate restart. RemoteUSB, its registration, and retry scripts remain. |
