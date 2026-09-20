@@ -1,0 +1,69 @@
+:root {
+  --vp-c-brand-1: #2464d8;
+  --vp-c-brand-2: #1d53b9;
+  --vp-c-brand-3: #2464d8;
+  --vp-font-family-base: "Inter", "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-soft: #f2f6fc;
+  --site-line: #dae3f0;
+}
+.dark { --vp-c-brand-1: #83b5ff; --vp-c-brand-2: #a3c9ff; --site-soft: #192231; --site-line: #303d51; }
+.VPNavBarTitle .title { font-weight: 750; letter-spacing: -.5px; }
+.landing { max-width: 1200px; margin: auto; padding: 0 40px 80px; }
+.landing h1, .landing h2, .landing h3, .landing p { margin: 0; }
+.landing .eyebrow { color: var(--vp-c-brand-1); font-size: 11px; font-weight: 750; letter-spacing: .16em; line-height: 1.8; }
+.hero { display: grid; grid-template-columns: 1.45fr 1fr; align-items: center; gap: 28px; padding: 100px 0 80px; }
+.hero .eyebrow { display: flex; align-items: center; gap: 10px; }
+.hero .eyebrow span { width: 7px; height: 7px; background: #34ab81; border-radius: 50%; }
+.landing h1 { margin-top: 25px; font-size: clamp(36px, 4.5vw, 62px); line-height: 1.25; letter-spacing: -.045em; font-weight: 800; }
+.landing h1 > span { color: var(--vp-c-brand-1); }
+.landing .hero-description { max-width: 540px; margin-top: 25px; color: var(--vp-c-text-2); font-size: 16px; line-height: 1.95; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 20px; padding: 14px 22px; border-radius: 9px; font-size: 14px; font-weight: 650; transition: background .2s, transform .2s; }
+.button:hover { transform: translateY(-2px); }
+.button.primary { background: #2464d8; color: white; box-shadow: 0 5px 15px #2464d822; }
+.button.primary:hover { background: #1d53b9; }
+.button.secondary { border: 1px solid var(--site-line); background: var(--vp-c-bg); }
+.landing a:focus-visible { outline: 3px solid var(--vp-c-brand-1); outline-offset: 5px; }
+.landing .compatibility { color: var(--vp-c-text-2); font-size: 12px; margin-top: 18px; }
+.compatibility span { margin: 0 8px; opacity: .5; }
+.connection-art { position: relative; height: 330px; display: grid; place-items: center; background: radial-gradient(ellipse, #448fff20, transparent 70%); }
+.orbit { position: absolute; width: 250px; height: 250px; border: 1px solid var(--site-line); border-radius: 50%; }
+.orbit-two { width: 330px; height: 330px; border-style: dashed; }
+.brand-node { display: grid; place-items: center; width: 140px; height: 140px; border: 1px solid var(--site-line); background: var(--vp-c-bg); border-radius: 32px; box-shadow: 0 24px 60px #2464d820; transform: rotate(-8deg); z-index: 1; }
+.brand-node img { border-radius: 22px; }
+.device-node { position: absolute; z-index: 2; border: 1px solid var(--site-line); padding: 15px; border-radius: 16px; background: var(--vp-c-bg); font-size: 13px; font-weight: 750; color: var(--vp-c-brand-1); box-shadow: 0 8px 25px #2464d810; }
+.node-usb { top: 42px; left: 28px; }.node-pc { right: 25px; bottom: 60px; }
+.connection-label { position: absolute; bottom: 8px; font-size: 9px; letter-spacing: .22em; color: var(--vp-c-text-2); }
+.section-heading { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 25px; }
+.landing h2 { font-size: clamp(25px, 3vw, 36px); line-height: 1.5; letter-spacing: -.035em; font-weight: 750; margin-top: 9px; }
+.section-heading > p { max-width: 330px; font-size: 14px; color: var(--vp-c-text-2); line-height: 1.8; }
+.product-frame { margin: 0; overflow: hidden; border: 1px solid var(--site-line); border-radius: 14px; background: var(--site-soft); box-shadow: 0 25px 70px #1a407b12; }
+.window-bar { display: flex; justify-content: space-between; padding: 12px 20px; color: var(--vp-c-text-2); font-size: 11px; }
+.window-dots { letter-spacing: 4px; color: var(--vp-c-text-3); }
+.product-frame img { display: block; width: 100%; height: auto; }
+.product-frame figcaption { text-align: center; padding: 13px 20px; color: var(--vp-c-text-2); font-size: 11px; line-height: 1.7; }
+.features { padding: 95px 0 75px; }
+.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 35px; margin-top: 35px; }
+.feature-grid article { border-top: 1px solid var(--site-line); padding-top: 25px; }
+.feature-number { font-size: 12px; color: var(--vp-c-brand-1); font-weight: 700; }
+.landing h3 { font-size: 19px; line-height: 1.6; font-weight: 700; }
+.feature-grid h3 { margin: 15px 0 10px; }
+.feature-grid p, .setup li p { color: var(--vp-c-text-2); font-size: 14px; line-height: 1.9; }
+.setup { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; border-top: 1px solid var(--site-line); padding: 65px 0 80px; }
+.setup .text-link { display: inline-block; margin-top: 25px; }
+.setup ol { list-style: none; margin: 0; padding: 0; counter-reset: steps; }
+.setup li { position: relative; padding: 0 0 28px 52px; counter-increment: steps; }
+.setup li::before { content: counter(steps); position: absolute; left: 0; top: 0; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--site-soft); color: var(--vp-c-brand-1); font-weight: 700; font-size: 13px; }
+.setup li:last-child { padding-bottom: 0; }
+.setup li p { margin-top: 7px; }
+.text-link { color: var(--vp-c-brand-1); font-size: 14px; font-weight: 650; }
+.text-link:hover { text-decoration: underline; }
+.download-panel { text-align: center; padding: 55px 30px; background: var(--site-soft); border: 1px solid var(--site-line); border-radius: 20px; }
+.download-panel > p:not(.eyebrow) { margin-top: 15px; color: var(--vp-c-text-2); line-height: 1.8; font-size: 14px; }
+.download-panel .button { margin-top: 25px; }
+.download-panel .release-note { font-size: 12px !important; }
+.download-panel .text-link { display: inline-block; margin-top: 20px; }
+@media (min-width: 1500px) { .hero { padding-top: 120px; } }
+@media (max-width: 850px) { .hero { grid-template-columns: 1fr; padding: 65px 0; } .connection-art { display: none; } .hero-copy { max-width: 650px; } .feature-grid { gap: 22px; } .setup { gap: 35px; } }
+@media (max-width: 600px) { .landing { padding: 0 22px 45px; } .hero { padding: 48px 0; } .landing h1 { font-size: 37px; } .section-heading { display: block; } .section-heading > p { margin-top: 12px; } .feature-grid, .setup { grid-template-columns: 1fr; } .features { padding: 55px 0; } .feature-grid { gap: 28px; } .setup { padding: 40px 0 50px; } .download-panel { padding: 35px 20px; } .button { padding: 13px 17px; gap: 12px; } }
+@media (prefers-reduced-motion: reduce) { .button { transition: none; } .button:hover { transform: none; } }

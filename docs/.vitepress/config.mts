@@ -16,17 +16,17 @@ const language = (
   link: prefix,
   themeConfig: {
     nav: [
-      { text: guide, link: prefix },
-      { text: download, link: repository + "/releases/latest" },
+      { text: guide, link: prefix + "guide" },
+      { text: download, link: repository + "/releases" },
     ],
     sidebar: [
-      { text: guide, link: prefix },
+      { text: guide, link: prefix + "guide" },
       {
         text: "Technical reference",
         items: [
-          { text: "Architecture (日本語)", link: "/reference/architecture" },
+          { text: "Architecture", link: "/reference/architecture" },
           {
-            text: "Documentation site (English)",
+            text: "Website maintenance",
             link: "/reference/documentation",
           },
         ],
@@ -39,7 +39,7 @@ const language = (
 export default withMermaid(
   defineConfig({
     title: "RemoteUSB",
-    description: "USB/IP client & server for Windows — documentation",
+    description: "Connect and share USB devices over your network. Free, open-source USB/IP client and server for Windows.",
 
     base: "/",
 

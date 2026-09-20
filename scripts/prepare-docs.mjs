@@ -6,15 +6,20 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const destination = path.join(root, "docs/.vitepress/content");
 const repository = "https://github.com/umaxiaotian/RemoteUSB/blob/main/";
 const pages = new Map([
-  ["README.md", "index.md"],
-  ["README.ja.md", "ja/index.md"],
-  ["README.ko.md", "ko/index.md"],
-  ["README.zh-CN.md", "zh-CN/index.md"],
+  ["README.md", "guide.md"],
+  ["README.ja.md", "ja/guide.md"],
+  ["README.ko.md", "ko/guide.md"],
+  ["README.zh-CN.md", "zh-CN/guide.md"],
   ["docs/architecture.md", "reference/architecture.md"],
   ["docs/documentation.md", "reference/documentation.md"],
 ]);
 
-// Keep README files and technical notes as the only editable content sources.
+// Landing pages have their own sources; README files remain the guides.
+for (const locale of ["en", "ja", "ko", "zh-CN"]) {
+  const target = path.join(destination, locale === "en" ? "" : locale, "index.md");
+  await mkdir(path.dirname(target), { recursive: true });
+  await cp(path.join(root, "docs/site", `${locale}.md`), target);
+}
 for (const [source, target] of pages) {
   let content = await readFile(path.join(root, source), "utf8");
   content = content.replace(
@@ -57,4 +62,4 @@ await cp(
   path.join(root, "build/icon.png"),
   path.join(destination, "public/icon.png"),
 );
-console.log(`Prepared ${pages.size} documentation pages.`);
+console.log(`Prepared 4 landing pages and ${pages.size} guide/reference pages.`);
