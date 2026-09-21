@@ -5,7 +5,7 @@ import { copy } from "./copy";
 
 const { lang } = useData();
 const text = computed(() => copy[lang.value] || copy.en);
-const releases = "https://github.com/umaxiaotian/RemoteUSB/releases";
+const downloadUrl = "https://sourceforge.net/projects/remoteusb/files/latest/download";
 </script>
 
 <template>
@@ -16,7 +16,7 @@ const releases = "https://github.com/umaxiaotian/RemoteUSB/releases";
         <h1 id="hero-title">{{ text.title }}<br /><span>{{ text.accent }}</span></h1>
         <p class="hero-description">{{ text.description }}</p>
         <div class="actions">
-          <a class="button primary" :href="releases">{{ text.download }} <span aria-hidden="true">↗</span></a>
+          <a class="button primary" :href="downloadUrl">{{ text.download }} <span aria-hidden="true">↗</span></a>
           <a class="button secondary" :href="withBase(text.guide)">{{ text.start }} <span aria-hidden="true">→</span></a>
         </div>
         <p class="compatibility">Windows 11 · x64 <span> / </span> {{ text.free }}</p>
@@ -51,7 +51,7 @@ const releases = "https://github.com/umaxiaotian/RemoteUSB/releases";
 
     <section class="download-panel" aria-labelledby="download-title">
       <p class="eyebrow">FREE & OPEN SOURCE</p><h2 id="download-title">{{ text.cta }}</h2><p>{{ text.ctaDescription }}</p>
-      <a class="button primary" :href="releases">{{ text.download }} <span aria-hidden="true">↗</span></a>
+      <a class="button primary" :href="downloadUrl">{{ text.download }} <span aria-hidden="true">↗</span></a>
       <p class="release-note">{{ text.note }}</p>
       <a class="text-link" href="https://github.com/umaxiaotian/RemoteUSB">{{ text.source }} <span aria-hidden="true">↗</span></a>
     </section>

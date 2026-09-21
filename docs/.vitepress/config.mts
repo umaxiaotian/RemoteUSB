@@ -17,7 +17,7 @@ const language = (
   themeConfig: {
     nav: [
       { text: guide, link: prefix + "guide" },
-      { text: download, link: repository + "/releases" },
+      { text: download, link: "https://sourceforge.net/projects/remoteusb/files/latest/download" },
     ],
     sidebar: [
       { text: guide, link: prefix + "guide" },
