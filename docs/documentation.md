@@ -22,7 +22,7 @@ Open the URL printed by VitePress. The site is served from `/` for the custom do
 
 Edit `docs/site/*.md` for landing-page metadata and `docs/.vitepress/theme/copy.ts` for the four languages of product copy. The shared landing-page component and responsive styles live in `docs/.vitepress/theme/`.
 
-The four root README files supply the guides at `/guide.html`, `/ja/guide.html`, `/ko/guide.html`, and `/zh-CN/guide.html`. Edit public technical Markdown files in `docs/` for the references. Download buttons and navigation links point to the repository’s GitHub Releases page.
+The four root README files supply the guides at `/guide.html`, `/ja/guide.html`, `/ko/guide.html`, and `/zh-CN/guide.html`. Edit public technical Markdown files in `docs/` for the references. Download buttons and navigation links point to [the latest download on SourceForge](https://sourceforge.net/projects/remoteusb/files/latest/download), which starts the download when clicked.
 `scripts/prepare-docs.mjs` generates the site content, adjusts links and copies branding and screenshots before development or build. Restart `docs:dev` after editing the source documents to regenerate pages.
 
 Do not edit or commit `docs/.vitepress/content/`, `cache/` or `dist/`. Configuration lives in `docs/.vitepress/config.mts`. The public technical references are limited to Architecture and documentation-site maintenance; implementation-specific USB/IP backend notes remain repository-internal.
