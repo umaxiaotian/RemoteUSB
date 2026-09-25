@@ -62,4 +62,8 @@ await cp(
   path.join(root, "build/icon.png"),
   path.join(destination, "public/icon.png"),
 );
+await cp(
+  path.join(root, "docs/public/google88e0fcc7977f473f.html"),
+  path.join(destination, "public/google88e0fcc7977f473f.html"),
+);
 console.log(`Prepared 4 landing pages and ${pages.size} guide/reference pages.`);
